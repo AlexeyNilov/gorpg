@@ -3,7 +3,7 @@ package gemini
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -12,11 +12,48 @@ import (
 
 const (
 	apiEndpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+	apiKeyName = "GOOGLE_GENAI_API_KEY"
 )
 
+// APIClient defines an interface for making API requests
+type APIClient interface {
+	SendRequest(url, apiKey string, payload []byte) ([]byte, error)
+}
+
+// DefaultAPIClient is the real implementation of APIClient
+type DefaultAPIClient struct{}
+
+// SendRequest makes an HTTP request to the given URL with the payload
+func (c *DefaultAPIClient) SendRequest(url, apiKey string, payload []byte) ([]byte, error) {
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
+	if err != nil {
+		return nil, wrapError("Error creating request", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.URL.RawQuery = "key=" + apiKey
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, wrapError("Error making API request", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, wrapError("Error reading response body", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("request failed with status " + resp.Status + ": " + string(body))
+	}
+
+	return body, nil
+}
+
 // GenerateText generates text for a given prompt using the Gemini API
-func GenerateText(prompt string) string {
-	apiKey := getEnvVar("GOOGLE_GENAI_API_KEY")
+func GenerateText(client APIClient, prompt string) (string, error) {
+	apiKey := getEnvVar(apiKeyName)
 
 	// Prepare request payload
 	payload := mustMarshal(map[string]interface{}{
@@ -26,13 +63,16 @@ func GenerateText(prompt string) string {
 	})
 
 	// Make the API request
-	responseBytes := mustSendRequest(apiEndpoint, apiKey, payload)
+	responseBytes, err := client.SendRequest(apiEndpoint, apiKey, payload)
+	if err != nil {
+		return "", err
+	}
 
 	// Extract the text field from the response
-	return mustExtractText(responseBytes)
+	return extractText(responseBytes)
 }
 
-// getEnvVar retrieves an environment variable or exits if not found
+// getEnvVar retrieves an environment variable or returns an error if not found
 func getEnvVar(key string) string {
 	value := os.Getenv(key)
 	if value == "" {
@@ -41,7 +81,7 @@ func getEnvVar(key string) string {
 	return value
 }
 
-// mustMarshal marshals an object to JSON or exits on failure
+// mustMarshal marshals an object to JSON and returns an error if failure occurs
 func mustMarshal(data interface{}) []byte {
 	payload, err := json.Marshal(data)
 	if err != nil {
@@ -50,36 +90,8 @@ func mustMarshal(data interface{}) []byte {
 	return payload
 }
 
-// mustSendRequest sends an HTTP request and returns the response bytes or exits on failure
-func mustSendRequest(url, apiKey string, payload []byte) []byte {
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
-	if err != nil {
-		log.Fatalf("Error creating request: %v", err)
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.URL.RawQuery = fmt.Sprintf("key=%s", apiKey)
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatalf("Error making API request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Error reading response body: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		log.Fatalf("Request failed with status %d: %s", resp.StatusCode, body)
-	}
-
-	return body
-}
-
-// mustExtractText extracts the text field from the response JSON or exits on failure
-func mustExtractText(response []byte) string {
+// extractText extracts the text field from the response JSON and returns an error if not found
+func extractText(response []byte) (string, error) {
 	var parsedResponse struct {
 		Candidates []struct {
 			Content struct {
@@ -90,15 +102,18 @@ func mustExtractText(response []byte) string {
 		} `json:"candidates"`
 	}
 
-	err := json.Unmarshal(response, &parsedResponse)
-	if err != nil {
-		log.Fatalf("Error parsing response JSON: %v", err)
+	if err := json.Unmarshal(response, &parsedResponse); err != nil {
+		return "", wrapError("Error parsing response JSON", err)
 	}
 
 	if len(parsedResponse.Candidates) > 0 && len(parsedResponse.Candidates[0].Content.Parts) > 0 {
-		return parsedResponse.Candidates[0].Content.Parts[0].Text
+		return parsedResponse.Candidates[0].Content.Parts[0].Text, nil
 	}
 
-	log.Fatal("No text found in response")
-	return ""
+	return "", errors.New("no text found in response")
+}
+
+// wrapError creates a detailed error message
+func wrapError(message string, err error) error {
+	return errors.New(message + ": " + err.Error())
 }
