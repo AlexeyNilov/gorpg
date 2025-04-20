@@ -24,3 +24,25 @@ func TestLogEvent(t *testing.T) {
 	want := []string{"Woke up"}
 	assert.Equal(t, want, npc.Log)
 }
+
+func TestGetPrompt(t *testing.T) {
+	background := "Dense forest, night"
+
+	npc := newTestNPC()
+	npc.LogEvent("Woke up")
+	npc.LogEvent("Sniff air")
+
+	got := GetPrompt(npc, background)
+
+	want := `# Background:
+Dense forest, night
+Your name is Wolf; You are Wild wolf, powerful and hungry
+
+# Previous events:
+Woke up
+Sniff air
+
+# Decide what to do, be brief and realistic, focus on actions and feelings:`
+
+	assert.Equal(t, want, got)
+}
