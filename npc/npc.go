@@ -46,6 +46,7 @@ func GetDecisionPrompt(npc NPC, background string) string {
 func (n *NPC) React(tg textgen.TextGenerator, background string) string {
 	prompt := GetDecisionPrompt(*n, background)
 	reaction, _ := tg.Generate(prompt)
+	n.LogEvent(reaction)
 	return strings.TrimSpace(reaction)
 }
 
