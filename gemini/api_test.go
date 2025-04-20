@@ -4,6 +4,8 @@ import (
 	"errors"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // MockAPIClient is a mock implementation of APIClient
@@ -41,41 +43,20 @@ func TestGenerateText(t *testing.T) {
 	mockClient := newMockClient(mockResponse, nil)
 
 	result, err := GenerateText(mockClient, "Test prompt")
-	assertNoError(t, err)
+	assert.NoError(t, err)
 
 	expected := "This is a mock response text."
-	if result != expected {
-		t.Errorf("Expected %q but got %q", expected, result)
-	}
+	assert.Equal(t, expected, result)
 }
 
 func TestGenerateText_Error(t *testing.T) {
 	mockClient := newMockClient(nil, errors.New("mock error"))
 
 	_, err := GenerateText(mockClient, "Test prompt")
-	assertError(t, err, "mock error")
+	assert.Error(t, err, "mock error")
 }
 
 // Helper function to create a mock client
 func newMockClient(response []byte, err error) *MockAPIClient {
 	return &MockAPIClient{Response: response, Err: err}
-}
-
-// Helper function to assert no error
-func assertNoError(t *testing.T, err error) {
-	t.Helper()
-	if err != nil {
-		t.Fatalf("Unexpected error: %v", err)
-	}
-}
-
-// Helper function to assert a specific error message
-func assertError(t *testing.T, err error, expectedMessage string) {
-	t.Helper()
-	if err == nil {
-		t.Fatalf("Expected error, but got none")
-	}
-	if err.Error() != expectedMessage {
-		t.Errorf("Expected error %q, but got %q", expectedMessage, err.Error())
-	}
 }
