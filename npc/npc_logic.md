@@ -1,21 +1,34 @@
 ```mermaid  
 flowchart TD
 
-Observe["GetScene"]
+Observe["Scene"]
 subgraph Orient["GetContext"]
-    GetNPCDescription
-    GetLog
+    NPC_Description
+    NPC_Log
 end
 
-subgraph Decide["Prompt"]
+subgraph Decide["NPC Prompt"]
     YouAre
     Background
-    History
-    Plan
+    Events
 end
 
+Reaction["NPC Reaction"]
+
 Observe --> Background
-GetNPCDescription --> YouAre
-GetLog --> History
+NPC_Description --> YouAre
+NPC_Log --> Events
+
+YouAre --> Reaction
+Background --> Reaction
+Events --> Reaction
+
+Reaction --> Validate["GM validation"]
+Validate --> Change_PoV
+Change_PoV --> Show_to_Player
+Show_to_Player --> Player_Acts
+Player_Acts --> Simplify
+Simplify --Update scene-->Observe
+Simplify --> Update_logs
 
 ```

@@ -1,8 +1,11 @@
 package npc
 
 import (
+	"log"
 	"testing"
 
+	"github.com/AlexeyNilov/gorpg/gemini"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -44,5 +47,32 @@ Sniff air
 
 # Decide what to do, be brief and realistic, focus on actions and feelings:`
 
+	assert.Equal(t, want, got)
+}
+
+type MockTextGenerator struct {
+	Text string
+	Err  error
+}
+
+// SendRequest returns a mock response or error
+func (m *MockTextGenerator) GenerateText(client gemini.APIClient, prompt string) (string, error) {
+	return m.Text, m.Err
+}
+
+func TestReact(t *testing.T) {
+	background := "Dense forest, night"
+	npc := newTestNPC()
+
+	err := godotenv.Load("../.env")
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	textGen := &MockTextGenerator{"Do something", nil}
+	// textGen := &gemini.DefaultTextGenerator{}
+	got := npc.React(textGen, background)
+
+	want := "Do something"
 	assert.Equal(t, want, got)
 }

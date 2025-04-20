@@ -3,6 +3,8 @@ package npc
 import (
 	"fmt"
 	"strings"
+
+	"github.com/AlexeyNilov/gorpg/gemini"
 )
 
 const (
@@ -36,4 +38,10 @@ func GetPrompt(npc NPC, background string) string {
 	return fmt.Sprintf(promptStructure,
 		background, npc.Name, npc.Describe(), events, decisionPrompt,
 	)
+}
+
+func (n *NPC) React(textGen gemini.TextGenerator, background string) string {
+	prompt := GetPrompt(*n, background)
+	reaction, _ := textGen.GenerateText(&gemini.DefaultAPIClient{}, prompt)
+	return strings.TrimSpace(reaction)
 }

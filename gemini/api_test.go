@@ -41,8 +41,9 @@ func TestGenerateText(t *testing.T) {
 	}`)
 
 	mockClient := newMockClient(mockResponse, nil)
+	textGen := DefaultTextGenerator{}
 
-	result, err := GenerateText(mockClient, "Test prompt")
+	result, err := textGen.GenerateText(mockClient, "Test prompt")
 	assert.NoError(t, err)
 
 	expected := "This is a mock response text."
@@ -51,8 +52,9 @@ func TestGenerateText(t *testing.T) {
 
 func TestGenerateText_Error(t *testing.T) {
 	mockClient := newMockClient(nil, errors.New("mock error"))
+	textGen := DefaultTextGenerator{}
 
-	_, err := GenerateText(mockClient, "Test prompt")
+	_, err := textGen.GenerateText(mockClient, "Test prompt")
 	assert.Error(t, err, "mock error")
 }
 
