@@ -25,23 +25,19 @@ type NPC struct {
 	Log         []string
 }
 
-func (n *NPC) Describe() string {
-	return n.Description
-}
-
 func (n *NPC) LogEvent(event string) {
 	n.Log = append(n.Log, event)
 }
 
-func GetPrompt(npc NPC, background string) string {
+func GetDecisionPrompt(npc NPC, background string) string {
 	events := strings.Join(npc.Log, "\n")
 	return fmt.Sprintf(promptStructure,
-		background, npc.Name, npc.Describe(), events, decisionPrompt,
+		background, npc.Name, npc.Description, events, decisionPrompt,
 	)
 }
 
 func (n *NPC) React(tg textgen.TextGenerator, background string) string {
-	prompt := GetPrompt(*n, background)
+	prompt := GetDecisionPrompt(*n, background)
 	reaction, _ := tg.Generate(prompt)
 	return strings.TrimSpace(reaction)
 }

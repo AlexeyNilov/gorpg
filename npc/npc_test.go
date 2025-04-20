@@ -14,13 +14,6 @@ func newTestNPC() NPC {
 	return NPC{Name: "Wolf", Description: "Wild wolf, powerful and hungry"}
 }
 
-func TestDescribe(t *testing.T) {
-	npc := newTestNPC()
-	got := npc.Describe()
-	want := "Wild wolf, powerful and hungry"
-	assert.Equal(t, want, got)
-}
-
 func TestLogEvent(t *testing.T) {
 	npc := newTestNPC()
 	npc.LogEvent("Woke up")
@@ -28,14 +21,14 @@ func TestLogEvent(t *testing.T) {
 	assert.Equal(t, want, npc.Log)
 }
 
-func TestGetPrompt(t *testing.T) {
+func TestGetDecisionPrompt(t *testing.T) {
 	background := "Dense forest, night"
 
 	npc := newTestNPC()
 	npc.LogEvent("Woke up")
 	npc.LogEvent("Sniff air")
 
-	got := GetPrompt(npc, background)
+	got := GetDecisionPrompt(npc, background)
 
 	want := `# Background:
 Dense forest, night
