@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/AlexeyNilov/gorpg/gemini"
+	"github.com/AlexeyNilov/gorpg/textgen"
 )
 
 const (
@@ -40,8 +40,8 @@ func GetPrompt(npc NPC, background string) string {
 	)
 }
 
-func (n *NPC) React(textGen gemini.TextGenerator, background string) string {
+func (n *NPC) React(tg textgen.TextGenerator, background string) string {
 	prompt := GetPrompt(*n, background)
-	reaction, _ := textGen.GenerateText(&gemini.DefaultAPIClient{}, prompt)
+	reaction, _ := tg.Generate(prompt)
 	return strings.TrimSpace(reaction)
 }

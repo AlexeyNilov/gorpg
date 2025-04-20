@@ -4,7 +4,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com/AlexeyNilov/gorpg/gemini"
+	"github.com/AlexeyNilov/gorpg/textgen"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
@@ -50,16 +50,6 @@ Sniff air
 	assert.Equal(t, want, got)
 }
 
-type MockTextGenerator struct {
-	Text string
-	Err  error
-}
-
-// SendRequest returns a mock response or error
-func (m *MockTextGenerator) GenerateText(client gemini.APIClient, prompt string) (string, error) {
-	return m.Text, m.Err
-}
-
 func TestReact(t *testing.T) {
 	background := "Dense forest, night"
 	npc := newTestNPC()
@@ -69,8 +59,8 @@ func TestReact(t *testing.T) {
 		log.Fatalf("Error loading .env file")
 	}
 
-	textGen := &MockTextGenerator{"Do something", nil}
-	// textGen := &gemini.DefaultTextGenerator{}
+	textGen := &textgen.MockTextGenerator{Text: "Do something    ", Err: nil}
+	// textGen := &textgen.GenericTextGenerator{}
 	got := npc.React(textGen, background)
 
 	want := "Do something"

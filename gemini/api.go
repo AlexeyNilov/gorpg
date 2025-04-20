@@ -51,10 +51,6 @@ func (c *DefaultAPIClient) SendRequest(url, apiKey string, payload []byte) ([]by
 	return body, nil
 }
 
-type TextGenerator interface {
-	GenerateText(client APIClient, prompt string) (string, error)
-}
-
 type DefaultTextGenerator struct{}
 
 // GenerateText generates text for a given prompt using the Gemini API
