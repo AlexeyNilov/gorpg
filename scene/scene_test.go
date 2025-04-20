@@ -25,6 +25,7 @@ func TestNewScene(t *testing.T) {
 	got := scene.Create(textGen)
 	want := "New scene"
 	assert.Equal(t, want, got)
+	assert.Equal(t, want, scene.Description)
 }
 
 func TestUpdateScene(t *testing.T) {
@@ -46,4 +47,5 @@ func TestUpdateScene(t *testing.T) {
 	got := scene.Update(textGen, reaction, pov, action)
 	want := "New scene"
 	assert.Equal(t, want, got)
+	assert.Equal(t, want, scene.Description)
 }

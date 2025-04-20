@@ -13,7 +13,7 @@ type Scene struct {
 }
 
 func (s *Scene) Create(tg textgen.TextGenerator) string {
-	prompt := s.System + "\n" + s.Start + "\nImagine and describe background"
+	prompt := s.System + "\n" + s.Start + `\nDescribe background of the given scene, focusing only on the description itself without any introductory or concluding phrases.`
 	s.Description, _ = tg.Generate(prompt)
 	return s.Description
 }
@@ -23,7 +23,7 @@ func (s *Scene) Update(tg textgen.TextGenerator, reaction, pov, action string) s
 # NPC actions: %s
 # Player point of view: %s
 # Player actions: %s
-Provide brief summary`, s.Start, reaction, pov, action)
-	s.Start, _ = tg.Generate(prompt)
-	return s.Start
+Provide brief summary, focusing only on the summary itself without any introductory or concluding phrases.`, s.Description, reaction, pov, action)
+	s.Description, _ = tg.Generate(prompt)
+	return s.Description
 }

@@ -22,7 +22,7 @@ Your name is %s; You are %s
 # Actions:
 %s
 
-Describe given above scene from the %s (%s) point of view. %s perception is %s`
+Describe given above scene from the %s (%s) point of view. %s perception is %s. Focusing only on the description itself without any introductory or concluding phrases.`
 )
 
 type NPC struct {
