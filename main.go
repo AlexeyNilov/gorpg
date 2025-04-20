@@ -17,7 +17,13 @@ func main() {
 	reaction := wolf.React(textGen, scene)
 	fmt.Println(reaction)
 
-	player := player.Player{Name: "John", Description: "Low level goblin archer", Perception: "poor"}
+	player := player.Player{
+		NPC: npc.NPC{
+			Name:        "John",
+			Description: "Low level goblin archer",
+			Perception:  "poor",
+		},
+	}
 	pov := player.GetPointOfView(textGen, reaction, scene)
 
 	fmt.Println(pov)

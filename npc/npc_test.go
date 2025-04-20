@@ -59,3 +59,38 @@ func TestReact(t *testing.T) {
 	want := "Do something"
 	assert.Equal(t, want, got)
 }
+
+
+func newTestPlayer() NPC {
+	return NPC{Name: "John", Description: "Low level goblin archer", Perception: "poor"}
+}
+
+func TestGetPointOfViewPrompt(t *testing.T) {
+	testPlayer := newTestPlayer()
+	background := "Test scene description"
+	npcActions := "Test action"
+	got := GetPointOfViewPrompt(testPlayer, npcActions, background)
+	want := `# Background:
+Test scene description
+# Actions:
+Test action
+
+Describe given above scene from the John (Low level goblin archer) point of view. John perception is poor`
+	assert.Equal(t, want, got)
+}
+
+func TestGetPOV(t *testing.T) {
+	testPlayer := newTestPlayer()
+	background := "Test scene description"
+	npcActions := "Test action"
+
+	err := godotenv.Load("../.env")
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	textGen := &textgen.MockTextGenerator{Text: "test pov    ", Err: nil}
+	got := testPlayer.GetPointOfView(textGen, npcActions, background)
+	want := "test pov"
+	assert.Equal(t, got, want)
+}
