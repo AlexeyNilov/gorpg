@@ -42,9 +42,8 @@ func TestUpdateScene(t *testing.T) {
 
 	textGen := &textgen.MockTextGenerator{Text: "New scene", Err: nil}
 	reaction := "reaction"
-	pov := "pov"
 	action := "action"
-	got := scene.Update(textGen, reaction, pov, action)
+	got := scene.Update(textGen, reaction, action)
 	want := "New scene"
 	assert.Equal(t, want, got)
 	assert.Equal(t, want, scene.Description)

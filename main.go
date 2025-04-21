@@ -18,7 +18,7 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player 
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
 	// Infinite loop
-	fmt.Println("Press Ctrl+C to exit.")
+	fmt.Print("Press Ctrl+C to exit\n\n")
 	for {
 		select {
 		case <-stop:
@@ -27,21 +27,21 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player 
 			return
 		default:
 			// Perform your loop operations here
-			fmt.Print("Background:\n", scene.Description, "\n===================\n")
+			fmt.Print(scene.Description, "\n===================\n")
 
 			reaction := npc.React(textGen, scene.Description)
-			fmt.Print("NPC Reaction:\n", reaction, "\n===================\n")
+			// fmt.Print("NPC Reaction:\n", reaction, "\n===================\n")
 
-			pov := player.GetPointOfView(textGen, reaction, scene.Description)
-			fmt.Print("Player POV:\n", pov, "\n===================\n")
+			// pov := player.GetPointOfView(textGen, reaction, scene.Description)
+			// fmt.Print("Player POV:\n", pov, "\n===================\n")
 
 			action := player.GetAction()
 			// TODO add validation and correction
 
-			fmt.Print("\n\n\n")
+			fmt.Print("\n")
 
 			// Next cycle
-			scene.Update(textGen, reaction, pov, action)
+			scene.Update(textGen, reaction, action)
 		}
 	}
 }
