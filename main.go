@@ -18,7 +18,8 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player 
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
 	// Infinite loop
-	fmt.Print("Press Ctrl+C to exit\n\n")
+	fmt.Print("Press Ctrl+C to exit\n")
+	fmt.Print("Story begins\n", "===================\n")
 	for {
 		select {
 		case <-stop:
@@ -62,13 +63,8 @@ func main() {
 	}
 
 	wolf := npc.NPC{Name: "Wolf", Description: "Wild wolf, powerful and hungry", Perception: "sharp"}
-
 	textGen := &textgen.GenericTextGenerator{}
-
 	scene.Create(textGen)
-
-	fmt.Print("Story begins", "\n===================\n")
-
 	Loop(textGen, scene, wolf, player)
 
 }
