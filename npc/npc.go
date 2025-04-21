@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	decisionPrompt  = "# Decide what to do, be brief and realistic, focus on actions and feelings:"
+	decisionPrompt  = "# Decide what to do, be brief and realistic, focus on actions and feelings. Use 3rd point of view (use your name instead of I):"
 	DecisionPromptStructure = `# Background:
 %s
 Your name is %s; You are %s

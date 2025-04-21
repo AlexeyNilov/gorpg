@@ -38,7 +38,7 @@ Your name is Wolf; You are Wild wolf, powerful and hungry
 Woke up
 Sniff air
 
-# Decide what to do, be brief and realistic, focus on actions and feelings:`
+# Decide what to do, be brief and realistic, focus on actions and feelings. Use 3rd point of view (use your name instead of I):`
 
 	assert.Equal(t, want, got)
 }
@@ -75,7 +75,7 @@ Test scene description
 # Actions:
 Test action
 
-Describe given above scene from the John (Low level goblin archer) point of view. John perception is poor`
+Describe given above scene from the John (Low level goblin archer) point of view. John perception is poor. Focusing only on the description itself without any introductory or concluding phrases.`
 	assert.Equal(t, want, got)
 }
 

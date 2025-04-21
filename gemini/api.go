@@ -12,7 +12,7 @@ import (
 
 const (
 	apiEndpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
-	apiKeyName = "GOOGLE_GENAI_API_KEY"
+	apiKeyName  = "GOOGLE_GENAI_API_KEY"
 )
 
 // APIClient defines an interface for making API requests
@@ -51,10 +51,10 @@ func (c *DefaultAPIClient) SendRequest(url, apiKey string, payload []byte) ([]by
 	return body, nil
 }
 
-type DefaultTextGenerator struct{}
+type GeminiTextGenerator struct{}
 
 // GenerateText generates text for a given prompt using the Gemini API
-func (g *DefaultTextGenerator) GenerateText(client APIClient, prompt string) (string, error) {
+func (g *GeminiTextGenerator) GenerateText(client APIClient, prompt string) (string, error) {
 	apiKey := getEnvVar(apiKeyName)
 
 	// Prepare request payload

@@ -21,7 +21,7 @@ type TextGenerator interface {
 type GenericTextGenerator struct{}
 
 func (g *GenericTextGenerator) Generate(prompt string) (string, error) {
-	generator := &gemini.DefaultTextGenerator{}
+	generator := &gemini.GeminiTextGenerator{}
 	text, err := generator.GenerateText(&gemini.DefaultAPIClient{}, prompt)
 	return text, err
 }

@@ -27,13 +27,13 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player 
 			return
 		default:
 			// Perform your loop operations here
-			fmt.Print("Background:\n", scene.Description, "\n===================")
+			fmt.Print("Background:\n", scene.Description, "\n===================\n")
 
 			reaction := npc.React(textGen, scene.Description)
-			fmt.Print("NPC Reaction:\n", reaction, "\n===================")
+			fmt.Print("NPC Reaction:\n", reaction, "\n===================\n")
 
 			pov := player.GetPointOfView(textGen, reaction, scene.Description)
-			fmt.Print("Player POV:\n", pov, "\n===================")
+			fmt.Print("Player POV:\n", pov, "\n===================\n")
 
 			action := player.GetAction()
 			// TODO add validation and correction
@@ -66,6 +66,8 @@ func main() {
 	textGen := &textgen.GenericTextGenerator{}
 
 	scene.Create(textGen)
+
+	fmt.Print("Story begins", "\n===================\n")
 
 	Loop(textGen, scene, wolf, player)
 

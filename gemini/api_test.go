@@ -41,7 +41,7 @@ func TestGenerateText(t *testing.T) {
 	}`)
 
 	mockClient := newMockClient(mockResponse, nil)
-	textGen := DefaultTextGenerator{}
+	textGen := GeminiTextGenerator{}
 
 	result, err := textGen.GenerateText(mockClient, "Test prompt")
 	assert.NoError(t, err)
@@ -52,7 +52,7 @@ func TestGenerateText(t *testing.T) {
 
 func TestGenerateText_Error(t *testing.T) {
 	mockClient := newMockClient(nil, errors.New("mock error"))
-	textGen := DefaultTextGenerator{}
+	textGen := GeminiTextGenerator{}
 
 	_, err := textGen.GenerateText(mockClient, "Test prompt")
 	assert.Error(t, err, "mock error")
