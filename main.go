@@ -31,10 +31,6 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player 
 			fmt.Print(scene.Description, "\n===================\n")
 
 			reaction := npc.React(textGen, scene.Description)
-			// fmt.Print("NPC Reaction:\n", reaction, "\n===================\n")
-
-			// pov := player.GetPointOfView(textGen, reaction, scene.Description)
-			// fmt.Print("Player POV:\n", pov, "\n===================\n")
 
 			action := player.GetAction()
 			// TODO add validation and correction

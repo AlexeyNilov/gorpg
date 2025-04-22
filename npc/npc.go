@@ -3,6 +3,7 @@ package npc
 import (
 	"fmt"
 	"strings"
+	// "text/template"
 
 	"github.com/AlexeyNilov/gorpg/textgen"
 )
@@ -17,12 +18,6 @@ Your name is %s; You are %s
 %s
 
 %s`
-	POVPromptStructure = `# Background:
-%s
-# Actions:
-%s
-
-Describe given above scene from the %s (%s) point of view. %s perception is %s. Focusing only on the description itself without any introductory or concluding phrases.`
 )
 
 type NPC struct {
@@ -48,16 +43,4 @@ func (n *NPC) React(tg textgen.TextGenerator, background string) string {
 	reaction, _ := tg.Generate(prompt)
 	n.LogEvent(reaction)
 	return strings.TrimSpace(reaction)
-}
-
-func (n *NPC) GetPointOfView(tg textgen.TextGenerator, actions, background string) string {
-	prompt := GetPointOfViewPrompt(*n, actions, background)
-	pov, _ := tg.Generate(prompt)
-	return strings.TrimSpace(pov)
-}
-
-func GetPointOfViewPrompt(npc NPC, actions, background string) string {
-	return fmt.Sprintf(POVPromptStructure,
-		background, actions, npc.Name, npc.Description, npc.Name, npc.Perception,
-	)
 }
