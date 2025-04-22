@@ -1,6 +1,7 @@
 package npc
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/AlexeyNilov/gorpg/textgen"
@@ -24,11 +25,11 @@ Your name is {{.NPCName}}; You are {{.NPCDescription}}
 # Results:
 {{.Background}}
 
-# Initial description:
+# Initial state:
 {{.NPCDescription}}
 
-Present your response in the following format:
-Description: [Detailed Description, including their appearance, intent, HP, skills, buffs/debuffs and inventory.]
+# Present your response in the following format:
+Description: [Detailed Description]
 `
 )
 
@@ -88,5 +89,6 @@ func (n *NPC) UpdateDescription(tg textgen.TextGenerator, background string) {
 		Events:         events,
 	}
 	raw := util.ParseTemplate(DescriptionUpdateTemplate, prompt)
+	fmt.Print("Reply from AI\n", raw, "\n\n")
 	n.Description = util.ExtractDescription(raw)
 }

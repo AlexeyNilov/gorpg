@@ -13,7 +13,7 @@ import (
 	"github.com/AlexeyNilov/gorpg/textgen"
 )
 
-func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player player.Player) {
+func Loop(textGen textgen.TextGenerator, scene scene.Scene, n npc.NPC, p player.Player) {
 	// Create a channel to listen for termination signals (Ctrl+C)
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
@@ -32,9 +32,9 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player 
 			// Perform your loop operations here
 			fmt.Print(scene.Description, "\n===================\n")
 
-			reaction := npc.React(textGen, scene.Description)
+			reaction := n.React(textGen, scene.Description)
 
-			action := player.GetAction()
+			action := p.GetAction()
 
 			fmt.Print("\n")
 
@@ -43,9 +43,10 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player 
 
 			randomNumber := rand.Intn(100) + 1 // This gives a number between 1 and 100
 			if randomNumber <= 10 {
-				player.UpdateDescription(textGen, scene.Description)
-				fmt.Print("\nPlayer updated\n", player.Description, "\n\n")
+				p.UpdateDescription(textGen, scene.Description)
+				fmt.Print("\nPlayer description updated\n")
 			}
+			_ = player.AppendToFile("player.log", p)
 		}
 	}
 }
@@ -56,7 +57,7 @@ func main() {
 	scene := scene.Scene{}
 	scene.Create(textGen)
 	name := player.GetName()
-	player := player.GeneratePlayer(textGen, name, "1")
+	player := player.GeneratePlayer(textGen, name, "1", "Human")
 	npc := scene.NewNPC(textGen, "2")
 
 	Loop(textGen, scene, npc, player)
