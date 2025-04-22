@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
@@ -39,6 +40,12 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player 
 
 			// Next cycle
 			scene.Update(textGen, reaction, action)
+
+			randomNumber := rand.Intn(100) + 1 // This gives a number between 1 and 100
+			if randomNumber <= 10 {
+				player.UpdateDescription(textGen, scene.Description)
+				fmt.Print("\nPlayer updated\n", player.Description, "\n\n")
+			}
 		}
 	}
 }
@@ -48,9 +55,10 @@ func main() {
 
 	scene := scene.Scene{}
 	scene.Create(textGen)
-	player := player.GeneratePlayer(textGen, "1")
+	name := player.GetName()
+	player := player.GeneratePlayer(textGen, name, "1")
 	npc := scene.NewNPC(textGen, "2")
-	
+
 	Loop(textGen, scene, npc, player)
 
 }

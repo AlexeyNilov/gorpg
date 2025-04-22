@@ -17,6 +17,19 @@ Your name is {{.NPCName}}; You are {{.NPCDescription}}
 {{.Events}}
 
 # Decide what to do, be brief and realistic, focus on actions and feelings. Use 3rd point of view (use your name instead of I):`
+	DescriptionUpdateTemplate = `You are the omnipotent System from a LitRPG universe, overseeing the intricately designed virtual world you've created. Update {{.NPCName}}'s description based on their actions and results. Include any significant changes to their level, HP, and skills.
+# Actions:
+{{.Events}}
+
+# Results:
+{{.Background}}
+
+# Initial description:
+{{.NPCDescription}}
+
+Present your response in the following format:
+Description: [Detailed Description, including their appearance, intent, HP, skills, buffs/debuffs and inventory.]
+`
 )
 
 type NPC struct {
@@ -58,4 +71,22 @@ func (n *NPC) React(tg textgen.TextGenerator, background string) string {
 	reaction, _ := tg.Generate(prompt)
 	n.LogEvent(reaction)
 	return strings.TrimSpace(reaction)
+}
+
+func (n *NPC) UpdateDescription(tg textgen.TextGenerator, background string) {
+	events := strings.Join(n.Log, "\n")
+
+	prompt := struct {
+		Background     string
+		NPCName        string
+		NPCDescription string
+		Events         string
+	}{
+		Background:     background,
+		NPCName:        n.Name,
+		NPCDescription: n.Description,
+		Events:         events,
+	}
+	raw := util.ParseTemplate(DescriptionUpdateTemplate, prompt)
+	n.Description = util.ExtractDescription(raw)
 }
