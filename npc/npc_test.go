@@ -21,6 +21,15 @@ func TestLogEvent(t *testing.T) {
 	assert.Equal(t, want, npc.Log)
 }
 
+func TestLogEventLength(t *testing.T) {
+	npc := newTestNPC()
+	for range 20 {
+		npc.LogEvent("Next event")
+	}
+	want := LogLength
+	assert.Equal(t, want, len(npc.Log))
+}
+
 func TestGetDecisionPrompt(t *testing.T) {
 	background := "Dense forest, night"
 
@@ -58,9 +67,4 @@ func TestReact(t *testing.T) {
 
 	want := "Do something"
 	assert.Equal(t, want, got)
-}
-
-
-func newTestPlayer() NPC {
-	return NPC{Name: "John", Description: "Low level goblin archer", Perception: "poor"}
 }

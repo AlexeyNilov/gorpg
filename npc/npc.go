@@ -1,24 +1,31 @@
 package npc
 
 import (
-	"fmt"
+	"bytes"
 	"strings"
-	// "text/template"
+	"text/template"
 
 	"github.com/AlexeyNilov/gorpg/textgen"
 )
 
 const (
-	decisionPrompt  = "# Decide what to do, be brief and realistic, focus on actions and feelings. Use 3rd point of view (use your name instead of I):"
+	LogLength               = 10
 	DecisionPromptStructure = `# Background:
-%s
-Your name is %s; You are %s
+{{.Background}}
+Your name is {{.NPCName}}; You are {{.NPCDescription}}
 
 # Previous events:
-%s
+{{.Events}}
 
-%s`
+# Decide what to do, be brief and realistic, focus on actions and feelings. Use 3rd point of view (use your name instead of I):`
 )
+
+type Prompt struct {
+	Background     string
+	NPCName        string
+	NPCDescription string
+	Events         string
+}
 
 type NPC struct {
 	Name        string
@@ -28,14 +35,42 @@ type NPC struct {
 }
 
 func (n *NPC) LogEvent(event string) {
+	// Append the new event to the log
 	n.Log = append(n.Log, event)
+
+	// Restrict the log to the last 10 entries
+	if len(n.Log) > LogLength {
+		n.Log = n.Log[len(n.Log)-LogLength:]
+	}
 }
 
 func GetDecisionPrompt(npc NPC, background string) string {
+	// Combine the NPC log into a single string
 	events := strings.Join(npc.Log, "\n")
-	return fmt.Sprintf(DecisionPromptStructure,
-		background, npc.Name, npc.Description, events, decisionPrompt,
-	)
+
+	// Define the prompt structure
+	prompt := Prompt{
+		Background:     background,
+		NPCName:        npc.Name,
+		NPCDescription: npc.Description,
+		Events:         events,
+	}
+
+	// Parse the template
+	tpl, err := template.New("Decision").Parse(DecisionPromptStructure)
+	if err != nil {
+		panic(err)
+	}
+
+	// Use a bytes.Buffer to capture the output
+	var buf bytes.Buffer
+	err = tpl.Execute(&buf, prompt)
+	if err != nil {
+		panic(err)
+	}
+
+	// Return the captured output as a string
+	return buf.String()
 }
 
 func (n *NPC) React(tg textgen.TextGenerator, background string) string {
