@@ -20,6 +20,7 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player 
 	// Infinite loop
 	fmt.Print("Press Ctrl+C to exit\n")
 	fmt.Print("Story begins\n", "===================\n")
+
 	for {
 		select {
 		case <-stop:
@@ -33,7 +34,6 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player 
 			reaction := npc.React(textGen, scene.Description)
 
 			action := player.GetAction()
-			// TODO add validation and correction
 
 			fmt.Print("\n")
 
@@ -48,19 +48,18 @@ func main() {
 		NPC: npc.NPC{
 			Name:        "John",
 			Description: "Low level goblin archer",
-			Perception:  "poor",
 		},
 		Input: os.Stdin,
 	}
 
 	
 
-	wolf := npc.NPC{Name: "Wolf", Description: "Wild wolf, powerful and hungry", Perception: "sharp"}
 	textGen := &textgen.GenericTextGenerator{}
 
 	scene := scene.Scene{}
 	scene.Create(textGen)
+	npc := scene.NewNPC(textGen, "2")
 	
-	Loop(textGen, scene, wolf, player)
+	Loop(textGen, scene, npc, player)
 
 }

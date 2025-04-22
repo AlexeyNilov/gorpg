@@ -1,17 +1,24 @@
 package scene
 
 import (
+	"github.com/AlexeyNilov/gorpg/npc"
 	"github.com/AlexeyNilov/gorpg/textgen"
 	"github.com/AlexeyNilov/gorpg/util"
 )
 
 const (
-	StartScenePrompt    = `I'm writing a LitRPG novel set in the System Apocalypse universe, where the world has been dramatically transformed by the System. The protagonist is teleported to a random outdoor location. The setting should evoke a sense of wonder and discovery, with the protagonist alone and not in immediate danger. Describe the location in vivid detail, using 'you' to immerse the reader as if they are experiencing the scene themselves. Use simple English.`
+	StartScenePrompt    = `I'm writing a LitRPG novel set in the System Apocalypse universe, where the world has been dramatically transformed by the System. The protagonist is teleported to a random outdoor location. The setting should evoke a sense of wonder and discovery, with the protagonist alone and not in immediate danger. Describe the location in vivid detail, using 'you' to immerse the reader as if they are experiencing the scene themselves. Use simple English. Avoid any introductory or concluding phrases.`
 	UpdateSceneTemplate = `# Background: {{.Background}}
 # NPC actions: {{.NPCActions}}
 # Player actions: {{.PlayerActions}}
 
 You are the omnipotent System from a LitRPG universe, overseeing a virtual world of your creation. Be critical and ensure the Player's actions remain grounded in their skills, stats, and level. If the Player attempts something beyond their abilities, enforce failure with humor, vividly describing the mishap. Predict and narrate the most likely outcome of the Player's actions based on their capabilities and the environment. Only describe events or NPC actions that the Player can perceive. When the Player requests information, seamlessly integrate it into your response. Avoid any introductory or concluding phrases.`
+	NewNPCTemplate = `You are the omnipotent System from a LitRPG universe, overseeing the intricately designed virtual world you’ve created. Generate a brief description of a new, randomly generated hostile NPC at Level {{.Level}}, tailored to fit the context of the scene: {{.Scene}}
+
+Ensure the NPC has a clear and menacing intent, and include a few fitting skills relevant to their level and role. Present your response in the following format:
+
+Name: [Generated NPC Name]
+Description: [Detailed NPC Description, including their appearance, demeanor, intent, and skills.]`
 )
 
 type Scene struct {
@@ -36,4 +43,17 @@ func (s *Scene) Update(tg textgen.TextGenerator, reaction, action string) string
 	prompt := util.ParseTemplate(UpdateSceneTemplate, data)
 	s.Description, _ = tg.Generate(prompt)
 	return s.Description
+}
+
+func (s *Scene) NewNPC(tg textgen.TextGenerator, level string) npc.NPC {
+	data := struct {
+		Level string
+		Scene string
+	}{
+		Level: level,
+		Scene: s.Description,
+	}
+	prompt := util.ParseTemplate(NewNPCTemplate, data)
+	reply, _ := tg.Generate(prompt)
+	return npc.NPC{Name: util.ExtractName(reply), Description: util.ExtractDescription(reply)}
 }

@@ -23,7 +23,6 @@ type NPC struct {
 	Name        string
 	Description string
 	Log         []string
-	Perception  string
 }
 
 func (n *NPC) LogEvent(event string) {

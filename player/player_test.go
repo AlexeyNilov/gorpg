@@ -14,7 +14,6 @@ func newTestPlayer() Player {
 		NPC: npc.NPC{
 			Name:        "John",
 			Description: "Low level goblin archer",
-			Perception:  "poor",
 		},
 		Input: mockInput,
 	}

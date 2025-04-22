@@ -43,3 +43,21 @@ func TestUpdateScene(t *testing.T) {
 	assert.Equal(t, want, got)
 	assert.Equal(t, want, scene.Description)
 }
+
+func TestNewNPC(t *testing.T) {
+	scene := Scene{}
+	err := godotenv.Load("../.env")
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+	text := `Name: **Test Name**
+Description: Test description
+more description`
+	wantName := "Test Name"
+	wantDesc := `Test description
+more description`
+	textGen := &textgen.MockTextGenerator{Text: text, Err: nil}
+	npc := scene.NewNPC(textGen, "1")
+	assert.Equal(t, wantName, npc.Name)
+	assert.Equal(t, wantDesc, npc.Description)
+}
