@@ -53,14 +53,14 @@ func main() {
 		Input: os.Stdin,
 	}
 
-	scene := scene.Scene{
-		Start:  fmt.Sprintf(`Its evening, the %s (%s) is lost in the wood. He wants to go home. But a strong wolf tries to catch him. The wolf is stalking.`, player.Name, player.Description),
-		System: `I'm writing litRPG game system for 12 y.o. children. You are very good dungeon master. Your role is to describe scenes. Be realistic and brief. Use simple English.`,
-	}
+	
 
 	wolf := npc.NPC{Name: "Wolf", Description: "Wild wolf, powerful and hungry", Perception: "sharp"}
 	textGen := &textgen.GenericTextGenerator{}
+
+	scene := scene.Scene{}
 	scene.Create(textGen)
+	
 	Loop(textGen, scene, wolf, player)
 
 }

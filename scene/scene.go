@@ -1,36 +1,39 @@
 package scene
 
 import (
-	"fmt"
-
 	"github.com/AlexeyNilov/gorpg/textgen"
+	"github.com/AlexeyNilov/gorpg/util"
+)
+
+const (
+	StartScenePrompt    = `I'm writing a LitRPG novel set in the System Apocalypse universe, where the world has been dramatically transformed by the System. The protagonist is teleported to a random outdoor location. The setting should evoke a sense of wonder and discovery, with the protagonist alone and not in immediate danger. Describe the location in vivid detail, using 'you' to immerse the reader as if they are experiencing the scene themselves. Use simple English.`
+	UpdateSceneTemplate = `# Background: {{.Background}}
+# NPC actions: {{.NPCActions}}
+# Player actions: {{.PlayerActions}}
+
+You are the omnipotent System from a LitRPG universe, overseeing a virtual world of your creation. Be critical and ensure the Player's actions remain grounded in their skills, stats, and level. If the Player attempts something beyond their abilities, enforce failure with humor, vividly describing the mishap. Predict and narrate the most likely outcome of the Player's actions based on their capabilities and the environment. Only describe events or NPC actions that the Player can perceive. When the Player requests information, seamlessly integrate it into your response. Avoid any introductory or concluding phrases.`
 )
 
 type Scene struct {
-	Start       string
-	System      string
 	Description string
 }
 
 func (s *Scene) Create(tg textgen.TextGenerator) string {
-	prompt := s.System + "\n" + s.Start + `\nDescribe background of the given scene, focusing only on the description itself without any introductory or concluding phrases.`
-	s.Description, _ = tg.Generate(prompt)
+	s.Description, _ = tg.Generate(StartScenePrompt)
 	return s.Description
 }
 
 func (s *Scene) Update(tg textgen.TextGenerator, reaction, action string) string {
-	prompt := fmt.Sprintf(`# Background: %s
-# NPC actions: %s
-# Player actions: %s
-
-You are almighty System (from LitRPG books) that created this virtual world. Be critical.
-Make sure Player actions are realistic.
-If player tries to do something impossible for his skill and level - fail it.
-Use humor describing the failure.
-Predict and describe most probable outcome of the actions.
-Do not describe NPC actions that are not visible to the Player.
-If Player requests some information include it into the description.
-Do not use any introductory or concluding phrases.`, s.Description, reaction, action)
+	data := struct {
+		Background    string
+		NPCActions    string
+		PlayerActions string
+	}{
+		Background:    s.Description,
+		NPCActions:    reaction,
+		PlayerActions: action,
+	}
+	prompt := util.ParseTemplate(UpdateSceneTemplate, data)
 	s.Description, _ = tg.Generate(prompt)
 	return s.Description
 }

@@ -10,10 +10,7 @@ import (
 )
 
 func TestNewScene(t *testing.T) {
-	scene := Scene{
-		Start:  "Starting position",
-		System: "System prompt",
-	}
+	scene := Scene{}
 
 	err := godotenv.Load("../.env")
 	if err != nil {
@@ -30,8 +27,6 @@ func TestNewScene(t *testing.T) {
 
 func TestUpdateScene(t *testing.T) {
 	scene := Scene{
-		Start:       "Starting position",
-		System:      "System prompt",
 		Description: "Old summary",
 	}
 
