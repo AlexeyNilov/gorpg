@@ -1,7 +1,6 @@
 package npc
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/AlexeyNilov/gorpg/textgen"
@@ -21,9 +20,6 @@ Your name is {{.NPCName}}; You are {{.NPCDescription}}
 	DescriptionUpdateTemplate = `You are the omnipotent System from a LitRPG universe, overseeing the intricately designed virtual world you've created. Update {{.NPCName}}'s description based on their actions and results. Include any significant changes to their level, HP, and skills.
 # Actions:
 {{.Events}}
-
-# Results:
-{{.Background}}
 
 # Initial state:
 {{.NPCDescription}}
@@ -77,7 +73,7 @@ func (n *NPC) React(tg textgen.TextGenerator, background string) string {
 func (n *NPC) UpdateDescription(tg textgen.TextGenerator, background string) {
 	events := strings.Join(n.Log, "\n")
 
-	prompt := struct {
+	data := struct {
 		Background     string
 		NPCName        string
 		NPCDescription string
@@ -88,7 +84,7 @@ func (n *NPC) UpdateDescription(tg textgen.TextGenerator, background string) {
 		NPCDescription: n.Description,
 		Events:         events,
 	}
-	raw := util.ParseTemplate(DescriptionUpdateTemplate, prompt)
-	fmt.Print("Reply from AI\n", raw, "\n\n")
+	prompt := util.ParseTemplate(DescriptionUpdateTemplate, data)
+	raw, _ := tg.Generate(prompt)
 	n.Description = util.ExtractDescription(raw)
 }
