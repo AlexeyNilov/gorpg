@@ -5,14 +5,36 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/AlexeyNilov/gorpg/npc"
+	"github.com/AlexeyNilov/gorpg/textgen"
+	"github.com/AlexeyNilov/gorpg/util"
+)
+
+const (
+	NewPlayerTemplate = `You are the omnipotent System from a LitRPG universe, overseeing the intricately designed virtual world you’ve created. Generate a brief description of a new, randomly generated Player at Level {{.Level}}. Randomly select their race and class, and include a few fitting skills appropriate to their level and role. The description should include their appearance, level, and relevant abilities. Present the result in the following format:
+
+Name: [Generated Player Name]
+Description: [Detailed Player Description, including race, class, appearance, level, and skills.]`
 )
 
 type Player struct {
 	npc.NPC
 	Input io.Reader
+}
+
+func (p *Player) Create(tg textgen.TextGenerator, level string) {
+	data := struct {
+		Level string
+	}{
+		Level: level,
+	}
+	prompt := util.ParseTemplate(NewPlayerTemplate, data)
+	reply, _ := tg.Generate(prompt)
+	p.Name = util.ExtractName(reply)
+	p.Description = util.ExtractDescription(reply)
 }
 
 func (p *Player) GetAction() string {
@@ -30,4 +52,13 @@ func (p *Player) GetAction() string {
 	action = strings.TrimSpace(action)
 	p.LogEvent(action)
 	return action
+}
+
+func GeneratePlayer(tg textgen.TextGenerator, level string) Player {
+	player := Player{
+		NPC:   npc.NPC{},
+		Input: os.Stdin,
+	}
+	player.Create(tg, level)
+	return player
 }

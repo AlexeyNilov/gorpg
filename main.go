@@ -44,20 +44,11 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, npc npc.NPC, player 
 }
 
 func main() {
-	player := player.Player{
-		NPC: npc.NPC{
-			Name:        "John",
-			Description: "Low level goblin archer",
-		},
-		Input: os.Stdin,
-	}
-
-	
-
 	textGen := &textgen.GenericTextGenerator{}
 
 	scene := scene.Scene{}
 	scene.Create(textGen)
+	player := player.GeneratePlayer(textGen, "1")
 	npc := scene.NewNPC(textGen, "2")
 	
 	Loop(textGen, scene, npc, player)
