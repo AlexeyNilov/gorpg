@@ -48,7 +48,6 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, n npc.NPC, p player.
 			randomNumber := rand.Intn(100) + 1 // This gives a number between 1 and 100
 			if randomNumber <= 20 {
 				p.UpdateDescription(textGen, scene.Description)
-				fmt.Print("\nPlayer description updated\n")
 			}
 			_ = npc.AppendToFile("log/player.log", p.NPC)
 			_ = npc.AppendToFile("log/npc.log", n)
