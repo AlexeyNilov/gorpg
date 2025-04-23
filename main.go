@@ -56,7 +56,7 @@ func main() {
 
 	scene := scene.Scene{}
 	scene.Create(textGen)
-	name := player.GetName()
+	name := player.GetName(os.Stdin)
 	player := player.GeneratePlayer(textGen, name, "1", "Human")
 	npc := scene.NewNPC(textGen, "2")
 

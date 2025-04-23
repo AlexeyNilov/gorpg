@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	NewPlayerTemplate = `You are the omnipotent System from a LitRPG universe, overseeing the intricately designed virtual world you’ve created. Generate a brief description of a new Player named {{.Name}}. Race {{.Race}}. Randomly select their class, and include a few fitting skills appropriate to their level {{.Level}} and role. The description should include their appearance, level, and relevant abilities. Present the result in the following format:
+	NewPlayerTemplate = `You are the omnipotent System from a LitRPG universe, overseeing the intricately designed virtual world you’ve created. Generate a brief description of a new Player named {{.Name}}. Race {{.Race}}. Randomly select their class, and include a few fitting skills appropriate to their level {{.Level}} and class. The description should include their appearance, level, and skills. Present the result in the following format:
 
 Description: [Detailed Player Description, including race, class, appearance, level, and skills.]`
 )
@@ -25,7 +25,7 @@ type Player struct {
 	Input io.Reader
 }
 
-func (p *Player) Create(tg textgen.TextGenerator, level, race string) {
+func (p *Player) CreateDescription(tg textgen.TextGenerator, level, race string) {
 	data := struct {
 		Level string
 		Name string
@@ -40,17 +40,20 @@ func (p *Player) Create(tg textgen.TextGenerator, level, race string) {
 	p.Description = util.ExtractDescription(reply)
 }
 
-func GetName() string {
+func GetName(input io.Reader) string {
 	fmt.Print("Enter your name: ")
 
-	// Read from the injected input source
-	reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReader(input)
 	name, err := reader.ReadString('\n')
 	if err != nil {
 		log.Println("Error reading input:", err)
-		return ""
+		panic(err)
 	}
-	return strings.TrimSpace(name)
+	name = strings.TrimSpace(name)
+	if len(name) == 0 {
+		panic("No name given")
+	}
+	return name
 }
 
 func (p *Player) GetAction() string {
@@ -75,7 +78,7 @@ func GeneratePlayer(tg textgen.TextGenerator, name, level, race string) Player {
 		NPC:   npc.NPC{Name: name},
 		Input: os.Stdin,
 	}
-	player.Create(tg, level, race)
+	player.CreateDescription(tg, level, race)
 	return player
 }
 
