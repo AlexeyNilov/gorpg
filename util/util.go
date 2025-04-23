@@ -76,5 +76,5 @@ func ExtractDescription(input string) string {
 		description += "\n" + strings.Join(additionalLines, "\n")
 	}
 
-	return description
+	return strings.TrimSpace(description)
 }

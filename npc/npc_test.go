@@ -1,13 +1,22 @@
 package npc
 
 import (
-	"log"
 	"testing"
 
+	"github.com/AlexeyNilov/gorpg/testutil"
 	"github.com/AlexeyNilov/gorpg/textgen"
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
+
+const mockText = `# Background:
+Dense forest, night
+Your name is Wolf; You are Wild wolf, powerful and hungry
+
+# Previous events:
+Woke up
+Sniff air
+
+# Decide what to do, be brief and realistic, focus on actions and feelings. Use 3rd point of view (use your name instead of I):`
 
 // Helper function to create a sample NPC for testing
 func newTestNPC() NPC {
@@ -30,25 +39,29 @@ func TestLogEventLength(t *testing.T) {
 	assert.Equal(t, want, len(npc.Log))
 }
 
-func TestGetDecisionPrompt(t *testing.T) {
+func TestUpdateDescription(t *testing.T) {
+	background := "Dense forest, night"
+	npc := newTestNPC()
+
+	testutil.LoadEnv()
+
+	textGen := &textgen.MockTextGenerator{Text: "Description: Do something ", Err: nil}
+	npc.UpdateDescription(textGen, background)
+
+	want := "Do something"
+	assert.Equal(t, want, npc.Description)
+}
+
+func TestGetPrompt(t *testing.T) {
 	background := "Dense forest, night"
 
 	npc := newTestNPC()
 	npc.LogEvent("Woke up")
 	npc.LogEvent("Sniff air")
 
-	got := GetDecisionPrompt(npc, background)
+	got := GetPrompt(DecisionTemplate, npc, background)
 
-	want := `# Background:
-Dense forest, night
-Your name is Wolf; You are Wild wolf, powerful and hungry
-
-# Previous events:
-Woke up
-Sniff air
-
-# Decide what to do, be brief and realistic, focus on actions and feelings. Use 3rd point of view (use your name instead of I):`
-
+	want := mockText
 	assert.Equal(t, want, got)
 }
 
@@ -56,15 +69,12 @@ func TestReact(t *testing.T) {
 	background := "Dense forest, night"
 	npc := newTestNPC()
 
-	err := godotenv.Load("../.env")
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
+	testutil.LoadEnv()
 
 	textGen := &textgen.MockTextGenerator{Text: "Do something    ", Err: nil}
-	// textGen := &textgen.GenericTextGenerator{}
 	got := npc.React(textGen, background)
 
 	want := "Do something"
 	assert.Equal(t, want, got)
+	assert.Equal(t, want, npc.Log[0])
 }
