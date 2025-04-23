@@ -16,7 +16,7 @@ import (
 const (
 	NewPlayerTemplate = `You are the omnipotent System AKA Game Master, overseeing virtual world. Generate a brief description of a new Player named {{.Name}}. Race {{.Race}}. Randomly select their class, and include a few fitting skills appropriate to their level {{.Level}} and class. The description should include their appearance, level, and skills. Present the result in the following format:
 
-Description: [Detailed Player Description, including race, class, appearance, level, and skills.]`
+Description: [Detailed Description, including race, class, appearance, level, HP, XP, and skills.]`
 )
 
 type Player struct {
