@@ -34,11 +34,14 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, n npc.NPC, p player.
 
 			reaction := n.React(textGen, scene.Description)
 
-			action := p.GetAction()
+			action, err := p.GetAction()
+			if err != nil {
+				fmt.Print("Error: ", err)
+				return
+			}
 
 			fmt.Print("\n")
 
-			// Next cycle
 			scene.Update(textGen, reaction, action)
 
 			randomNumber := rand.Intn(100) + 1 // This gives a number between 1 and 100
@@ -46,7 +49,8 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, n npc.NPC, p player.
 				p.UpdateDescription(textGen, scene.Description)
 				fmt.Print("\nPlayer description updated\n")
 			}
-			_ = player.AppendToFile("player.log", p)
+			_ = npc.AppendToFile("log/player.log", p.NPC)
+			_ = npc.AppendToFile("log/npc.log", n)
 		}
 	}
 }

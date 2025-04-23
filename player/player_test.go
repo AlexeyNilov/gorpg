@@ -25,8 +25,8 @@ func newTestPlayer() Player {
 
 func TestGetAction(t *testing.T) {
 	player := newTestPlayer()
-	action := player.GetAction()
-
+	action, err := player.GetAction()
+	assert.Nil(t, err)
 	assert.Equal(t, mockAction, action)
 	assert.Equal(t, mockAction, player.Log[0])
 }
@@ -66,4 +66,12 @@ func TestGetNamePanicsWhenNoName(t *testing.T) {
 
 	// Call the function, which should panic
 	GetName(mockInput)
+}
+
+func TestGeneratePlayer(t *testing.T) {
+	testutil.LoadEnv()
+	textGen := &textgen.MockTextGenerator{Text: "Description: test desc ", Err: nil}
+	player := GeneratePlayer(textGen, "John", "10", "human")
+	assert.Equal(t, "John", player.Name)
+	assert.Equal(t, "test desc", player.Description)
 }

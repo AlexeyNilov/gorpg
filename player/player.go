@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/AlexeyNilov/gorpg/npc"
 	"github.com/AlexeyNilov/gorpg/textgen"
@@ -15,7 +14,7 @@ import (
 )
 
 const (
-	NewPlayerTemplate = `You are the omnipotent System from a LitRPG universe, overseeing the intricately designed virtual world you’ve created. Generate a brief description of a new Player named {{.Name}}. Race {{.Race}}. Randomly select their class, and include a few fitting skills appropriate to their level {{.Level}} and class. The description should include their appearance, level, and skills. Present the result in the following format:
+	NewPlayerTemplate = `You are the omnipotent System AKA Game Master, overseeing virtual world. Generate a brief description of a new Player named {{.Name}}. Race {{.Race}}. Randomly select their class, and include a few fitting skills appropriate to their level {{.Level}} and class. The description should include their appearance, level, and skills. Present the result in the following format:
 
 Description: [Detailed Player Description, including race, class, appearance, level, and skills.]`
 )
@@ -28,12 +27,12 @@ type Player struct {
 func (p *Player) CreateDescription(tg textgen.TextGenerator, level, race string) {
 	data := struct {
 		Level string
-		Name string
-		Race string
+		Name  string
+		Race  string
 	}{
 		Level: level,
-		Name: p.Name,
-		Race: race,
+		Name:  p.Name,
+		Race:  race,
 	}
 	prompt := util.ParseTemplate(NewPlayerTemplate, data)
 	reply, _ := tg.Generate(prompt)
@@ -56,7 +55,7 @@ func GetName(input io.Reader) string {
 	return name
 }
 
-func (p *Player) GetAction() string {
+func (p *Player) GetAction() (string, error) {
 	// Prompt the user for input
 	fmt.Printf("%s, enter your action: ", p.Name)
 
@@ -64,13 +63,12 @@ func (p *Player) GetAction() string {
 	reader := bufio.NewReader(p.Input)
 	action, err := reader.ReadString('\n')
 	if err != nil {
-		log.Println("Error reading input:", err)
-		return ""
+		return "", err
 	}
 
 	action = strings.TrimSpace(action)
 	p.LogEvent(action)
-	return action
+	return action, nil
 }
 
 func GeneratePlayer(tg textgen.TextGenerator, name, level, race string) Player {
@@ -80,27 +78,4 @@ func GeneratePlayer(tg textgen.TextGenerator, name, level, race string) Player {
 	}
 	player.CreateDescription(tg, level, race)
 	return player
-}
-
-// Function to append NPC data with a timestamp to a file
-func AppendToFile(name string, p Player) error {
-	// Get the current timestamp in a human-readable format
-	timestamp := time.Now().Format("2006-01-02 15:04:05")
-
-	// Format the NPC data into a human-readable string with the timestamp
-	npcData := fmt.Sprintf("Timestamp: %s\nName: %s\nDescription: %s\nLog:\n", timestamp, p.Name, p.Description)
-	for _, event := range p.Log {
-		npcData += fmt.Sprintf("  - %s\n", event)
-	}
-
-	// Open the file npc.log in append mode, create it if it doesn't exist
-	file, err := os.OpenFile(name, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	// Append the formatted NPC data to the file
-	_, err = file.WriteString(npcData + "\n")
-	return err
 }

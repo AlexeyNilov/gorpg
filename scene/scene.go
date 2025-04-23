@@ -7,12 +7,13 @@ import (
 )
 
 const (
-	StartScenePrompt    = `I'm writing a LitRPG novel set in the System Apocalypse universe, where the world has been dramatically transformed by the System. The protagonist is teleported to a random outdoor location. The setting should evoke a sense of wonder and discovery, with the protagonist alone and not in immediate danger. Describe the location in vivid detail, using 'you' to immerse the reader as if they are experiencing the scene themselves. Use simple English. Avoid any introductory or concluding phrases.`
+	StartScenePrompt    = `I'm writing a LitRPG novel, where the world has been dramatically transformed by the System. The protagonist is teleported to a random outdoor location. Chose between forest, desert, mountains, iceland, beach, ruins.
+The setting should evoke a sense of wonder and discovery, with the protagonist alone and not in immediate danger. Describe the location in vivid detail, using 'you' to immerse the reader as if they are experiencing the scene themselves. Use simple English. Avoid any introductory or concluding phrases.`
 	UpdateSceneTemplate = `# Background: {{.Background}}
 # NPC actions: {{.NPCActions}}
 # Player actions: {{.PlayerActions}}
 
-You are the omnipotent System from a LitRPG universe, overseeing a virtual world of your creation. Be critical and ensure the Player's actions remain grounded in their skills, stats, and level. If the Player attempts something beyond their abilities, enforce failure with humor, vividly describing the mishap. Predict and narrate the most likely outcome of the Player's actions based on their capabilities and the environment. Only describe events or NPC actions that the Player can perceive. When the Player requests information, seamlessly integrate it into your response. Avoid any introductory or concluding phrases.`
+You are the omnipotent System AKA Game Master, overseeing virtual world. Be critical and ensure the Player's actions remain grounded in their skills, stats, and level. If the Player attempts something beyond their abilities, enforce failure with humor, vividly describing the mishap. Predict and narrate the most likely outcome of the Player's actions based on their capabilities and the environment. Only describe events or NPC actions that the Player can perceive. When the Player requests information, seamlessly integrate it into your response. Avoid any introductory or concluding phrases.`
 	NewNPCTemplate = `You are the omnipotent System from a LitRPG universe, overseeing the intricately designed virtual world you’ve created. Generate a brief description of a new, randomly generated hostile NPC at Level {{.Level}}, tailored to fit the context of the scene: {{.Scene}}
 
 Ensure the NPC has a clear and menacing intent, and include a few fitting skills relevant to their level and role. Present your response in the following format:
