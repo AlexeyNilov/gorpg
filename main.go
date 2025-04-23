@@ -43,6 +43,7 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, n npc.NPC, p player.
 			fmt.Print("\n")
 
 			scene.Update(textGen, reaction, action)
+			p.LogEvent(scene.GetSummary(textGen))
 
 			randomNumber := rand.Intn(100) + 1 // This gives a number between 1 and 100
 			if randomNumber <= 20 {

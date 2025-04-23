@@ -16,7 +16,7 @@ Your name is Wolf; You are Wild wolf, powerful and hungry
 Woke up
 Sniff air
 
-# Decide what to do, be brief and realistic, focus on actions and feelings. Use 3rd point of view (use your name instead of I):`
+# Decide what to do, be very brief and realistic, focus on actions. Use 3rd point of view (use your name instead of I):`
 
 // Helper function to create a sample NPC for testing
 func newTestNPC() NPC {

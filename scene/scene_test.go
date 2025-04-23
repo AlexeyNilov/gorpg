@@ -1,22 +1,17 @@
 package scene
 
 import (
-	"log"
 	"testing"
 
+	"github.com/AlexeyNilov/gorpg/testutil"
 	"github.com/AlexeyNilov/gorpg/textgen"
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewScene(t *testing.T) {
 	scene := Scene{}
 
-	err := godotenv.Load("../.env")
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-
+	testutil.LoadEnv()
 	textGen := &textgen.MockTextGenerator{Text: "New scene", Err: nil}
 
 	got := scene.Create(textGen)
@@ -30,11 +25,7 @@ func TestUpdateScene(t *testing.T) {
 		Description: "Old summary",
 	}
 
-	err := godotenv.Load("../.env")
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-
+	testutil.LoadEnv()
 	textGen := &textgen.MockTextGenerator{Text: "New scene", Err: nil}
 	reaction := "reaction"
 	action := "action"
@@ -46,18 +37,30 @@ func TestUpdateScene(t *testing.T) {
 
 func TestNewNPC(t *testing.T) {
 	scene := Scene{}
-	err := godotenv.Load("../.env")
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
+	testutil.LoadEnv()
+
 	text := `Name: **Test Name**
 Description: Test description
 more description`
+	textGen := &textgen.MockTextGenerator{Text: text, Err: nil}
+
 	wantName := "Test Name"
 	wantDesc := `Test description
 more description`
-	textGen := &textgen.MockTextGenerator{Text: text, Err: nil}
 	npc := scene.NewNPC(textGen, "1")
 	assert.Equal(t, wantName, npc.Name)
 	assert.Equal(t, wantDesc, npc.Description)
+}
+
+func TestGetSummary(t *testing.T) {
+	scene := Scene{
+		Description: "Test scene",
+	}
+
+	testutil.LoadEnv()
+	textGen := &textgen.MockTextGenerator{Text: "Test action  ", Err: nil}
+
+	got := scene.GetSummary(textGen)
+	want := "Test action"
+	assert.Equal(t, want, got)
 }

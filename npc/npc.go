@@ -19,7 +19,7 @@ Your name is {{.NPCName}}; You are {{.NPCDescription}}
 # Previous events:
 {{.Events}}
 
-# Decide what to do, be brief and realistic, focus on actions and feelings. Use 3rd point of view (use your name instead of I):`
+# Decide what to do, be very brief and realistic, focus on actions. Use 3rd point of view (use your name instead of I):`
 	DescriptionUpdateTemplate = `You are the omnipotent System AKA Game Master, overseeing virtual world. Update {{.NPCName}}'s description based on their actions and results. Include any significant changes to their level, HP, and skills.
 # Actions:
 {{.Events}}
