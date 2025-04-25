@@ -20,7 +20,7 @@ func TestNewScene(t *testing.T) {
 	assert.Equal(t, want, scene.Description)
 }
 
-func TestUpdateScene(t *testing.T) {
+func TestValidateAction(t *testing.T) {
 	scene := Scene{
 		Description: "Old summary",
 	}
@@ -29,7 +29,7 @@ func TestUpdateScene(t *testing.T) {
 	textGen := &textgen.MockTextGenerator{Text: "New scene", Err: nil}
 	reaction := "reaction"
 	action := "action"
-	got := scene.Update(textGen, reaction, action)
+	got := scene.ValidateAction(textGen, reaction, action)
 	want := "New scene"
 	assert.Equal(t, want, got)
 	assert.Equal(t, want, scene.Description)

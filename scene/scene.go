@@ -10,9 +10,14 @@ import (
 
 const (
 	StartScenePrompt    = `I'm writing a LitRPG novel, where the world has been dramatically transformed by the System. The protagonist is teleported to a random outdoor location. Chose between forest, desert, mountains, iceland, beach, ruins.
-The setting should evoke a sense of wonder and discovery, with the protagonist alone and not in immediate danger. Describe the location in vivid detail, using 'you' to immerse the reader as if they are experiencing the scene themselves.
+The setting should evoke a sense of wonder and discovery, with the protagonist alone and not in immediate danger.
+Describe the location in vivid detail, using 'you' to immerse the reader as if they are experiencing the scene themselves.
 Use simple English. Avoid any introductory or concluding phrases.`
-	UpdateSceneTemplate = `# Background: {{.Background}}
+	UpdateSceneTemplate = `Provide a brief summary of the scene, focusing on the background details and the surroundings. Use clear, simple English without any introductory or concluding phrases.
+
+{{.Background}}
+`
+	ValidateActionTemplate = `# Background: {{.Background}}
 
 # NPC actions: {{.NPCActions}}
 
@@ -30,10 +35,12 @@ Description: [Detailed NPC Description, including their appearance, intent, leve
 
 type Scene struct {
 	Description string
+	Background  string
 }
 
 func (s *Scene) Create(tg textgen.TextGenerator) string {
 	s.Description, _ = tg.Generate(StartScenePrompt)
+	s.Background = s.Description
 	return s.Description
 }
 
@@ -48,18 +55,31 @@ func (s *Scene) GetSummary(tg textgen.TextGenerator) string {
 	return strings.TrimSpace(summary)
 }
 
-func (s *Scene) Update(tg textgen.TextGenerator, reaction, action string) string {
+func (s *Scene) UpdateBackground(tg textgen.TextGenerator) string {
+	data := struct {
+		Background    string
+	}{
+		Background:    s.Background + "\n" + s.Description,
+	}
+	prompt := util.ParseTemplate(UpdateSceneTemplate, data)
+	s.Background, _ = tg.Generate(prompt)
+
+	return s.Background
+}
+
+func (s *Scene) ValidateAction(tg textgen.TextGenerator, reaction, action string) string {
 	data := struct {
 		Background    string
 		NPCActions    string
 		PlayerActions string
 	}{
-		Background:    s.Description,
+		Background:    s.Background + "\n" + s.Description,
 		NPCActions:    reaction,
 		PlayerActions: action,
 	}
-	prompt := util.ParseTemplate(UpdateSceneTemplate, data)
+	prompt := util.ParseTemplate(ValidateActionTemplate, data)
 	s.Description, _ = tg.Generate(prompt)
+
 	return s.Description
 }
 
