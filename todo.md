@@ -1,5 +1,4 @@
 # TODO
-* Test util
 * Resume
 
 
