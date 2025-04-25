@@ -10,8 +10,15 @@ import (
 	"github.com/AlexeyNilov/gorpg/npc"
 	"github.com/AlexeyNilov/gorpg/player"
 	"github.com/AlexeyNilov/gorpg/scene"
+	"github.com/AlexeyNilov/gorpg/storage"
 	"github.com/AlexeyNilov/gorpg/textgen"
 )
+
+func SaveState(p player.Player, n npc.NPC, s scene.Scene) {
+	npcs := []npc.NPC{n, p.NPC}
+	_ = storage.SaveNPCsToYAML(npcs, "data/npc.yaml")
+	_ = storage.SaveSceneToYAML(s, "data/scene.yaml")
+}
 
 func Loop(textGen textgen.TextGenerator, scene scene.Scene, n npc.NPC, p player.Player) {
 	// Create a channel to listen for termination signals (Ctrl+C)
@@ -49,8 +56,8 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, n npc.NPC, p player.
 			if randomNumber <= 20 {
 				p.UpdateDescription(textGen, scene.Description)
 			}
-			_ = npc.AppendToFile("log/player.log", p.NPC)
-			_ = npc.AppendToFile("log/npc.log", n)
+
+			SaveState(p, n, scene)
 		}
 	}
 }
