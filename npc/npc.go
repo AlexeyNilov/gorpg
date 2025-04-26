@@ -1,10 +1,7 @@
 package npc
 
 import (
-	"fmt"
-	"os"
 	"strings"
-	"time"
 
 	"github.com/AlexeyNilov/gorpg/textgen"
 	"github.com/AlexeyNilov/gorpg/util"
@@ -21,7 +18,7 @@ Your name is {{.NPCName}}; You are {{.NPCDescription}}
 
 # Decide what to do, be very brief and realistic, focus on actions. Use 3rd point of view (use your name instead of I):`
 	DescriptionUpdateTemplate = `You are the omnipotent System AKA Game Master, overseeing virtual world. Update {{.NPCName}}'s description based on their actions and results.
-Include any significant changes to their level, HP, and skills. Repeated actions can unlock new skills or enhance existing ones.
+Include any changes to their level, HP, and skills. Repeated actions can unlock new skills or enhance existing ones.
 
 # Actions:
 {{.Events}}
@@ -60,6 +57,7 @@ type NPC struct {
 	Name        string
 	Description string
 	Log         []string
+	Status      bool
 }
 
 func (n *NPC) LogEvent(event string) {
@@ -89,6 +87,12 @@ func GetPrompt(template string, npc NPC, background string) string {
 	return util.ParseTemplate(template, data)
 }
 
+func (n *NPC) Die () {
+	n.Name = ""
+	n.Description = ""
+	n.Log = nil
+}
+
 func (n *NPC) React(tg textgen.TextGenerator, background string) string {
 	prompt := GetPrompt(DecisionTemplate, *n, background)
 	reaction, _ := tg.Generate(prompt)
@@ -101,27 +105,14 @@ func (n *NPC) UpdateDescription(tg textgen.TextGenerator, background string) {
 	prompt := GetPrompt(DescriptionUpdateTemplate, *n, background)
 	raw, _ := tg.Generate(prompt)
 	n.Description = util.ExtractDescription(raw)
+	n.Status = n.IsAlive()
 }
 
-// Function to append NPC data with a timestamp to a file
-func AppendToFile(name string, npc NPC) error {
-	// Get the current timestamp in a human-readable format
-	timestamp := time.Now().Format("2006-01-02 15:04:05")
-
-	// Format the NPC data into a human-readable string with the timestamp
-	npcData := fmt.Sprintf("Timestamp: %s\nName: %s\nDescription: %s\nLog:\n", timestamp, npc.Name, npc.Description)
-	for _, event := range npc.Log {
-		npcData += fmt.Sprintf("  - %s\n", event)
+func (n *NPC) IsAlive() bool {
+	status := util.ExtractStatus(n.Description)
+	if status == "Alive" {
+		return true
+	} else {
+		return false
 	}
-
-	// Open the file npc.log in append mode, create it if it doesn't exist
-	file, err := os.OpenFile(name, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	// Append the formatted NPC data to the file
-	_, err = file.WriteString(npcData + "\n")
-	return err
 }

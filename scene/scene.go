@@ -61,8 +61,9 @@ Be creative, but use clear, simple English without any introductory or concludin
 
 # Player actions: {{.PlayerActions}}
 
-You are the omnipotent System AKA Game Master, overseeing virtual world. Be critical and ensure the Player's actions remain grounded in their skills, stats, and level. If the Player attempts something beyond their abilities, enforce failure with humor, vividly describing the mishap.
-Predict and narrate the most likely outcome of the Player's actions based on their capabilities and the environment. Only describe events or NPC actions that the Player can perceive.
+You are the omnipotent System AKA Game Master, overseeing virtual world. Be helpful and ensure the Player gets what he/she wants.
+Predict and narrate the most likely outcome of the Player's actions based on their capabilities and the environment.
+Only describe events or NPC actions that the Player can perceive.
 When the Player requests information, seamlessly integrate it into your response. Avoid any introductory or concluding phrases.`
 	NewNPCTemplate = `You are the omnipotent System AKA Game Master, overseeing virtual world. Generate a brief description of a new hostile|friendly|chaotic|neutral NPC at Level {{.Level}}, tailored to fit the context of the scene: {{.Scene}}
 
@@ -157,7 +158,9 @@ func (s *Scene) NewNPC(tg textgen.TextGenerator, level string) npc.NPC {
 	}
 	prompt := util.ParseTemplate(NewNPCTemplate, data)
 	reply, _ := tg.Generate(prompt)
-	return npc.NPC{Name: util.ExtractName(reply), Description: util.ExtractDescription(reply)}
+	n := npc.NPC{Name: util.ExtractName(reply), Description: util.ExtractDescription(reply)}
+	n.Status = n.IsAlive()
+	return n
 }
 
 // Function to append NPC data with a timestamp to a file

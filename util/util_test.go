@@ -29,6 +29,21 @@ func TestParseTemplate(t *testing.T) {
 	assert.Equal(t, expected, result)
 }
 
+func TestExtractStatus(t *testing.T) {
+	input := `Wild wolf, powerful and hungry
+# Status
+Dead`
+	want := "Dead"
+	got := ExtractStatus(input)
+	assert.Equal(t, want, got)
+	input = `Wild wolf, powerful and hungry
+# Status
+Alive`
+	want = "Alive"
+	got = ExtractStatus(input)
+	assert.Equal(t, want, got)
+}
+
 func TestExtractName(t *testing.T) {
 	// Test cases
 	tests := []struct {

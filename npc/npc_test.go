@@ -23,6 +23,17 @@ func newTestNPC() NPC {
 	return NPC{Name: "Wolf", Description: "Wild wolf, powerful and hungry"}
 }
 
+func TestIsAlive(t *testing.T) {
+	npc := newTestNPC()
+	npc.Description = `Wild wolf, powerful and hungry
+# Status
+Dead
+	`
+	got := npc.IsAlive()
+	want := false
+	assert.Equal(t, want, got)
+}
+
 func TestLogEvent(t *testing.T) {
 	npc := newTestNPC()
 	npc.LogEvent("Woke up")

@@ -29,7 +29,7 @@ Description: Detailed Player Description, including their appearance, class and 
 [Current health points/Max health points]
 
 # Status
-[Dead|Alive]
+Alive
 
 # Skills
 [List skills]
@@ -115,5 +115,6 @@ func GeneratePlayer(tg textgen.TextGenerator, name, level, race string) Player {
 		Input: os.Stdin,
 	}
 	player.CreateDescription(tg, level, race)
+	player.Status = player.IsAlive()
 	return player
 }

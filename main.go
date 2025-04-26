@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
@@ -24,6 +23,9 @@ func Loop(textGen textgen.TextGenerator, p player.Player, n npc.NPC, scene scene
 	// Infinite loop
 	fmt.Print("Press Ctrl+C to exit\n\n")
 
+	var NPCAction string
+	var Summary string
+
 	for {
 		select {
 		case <-stop:
@@ -41,7 +43,14 @@ func Loop(textGen textgen.TextGenerator, p player.Player, n npc.NPC, scene scene
 				fmt.Print("\nNo action, exiting...")
 				return
 			}
-			NPCAction := n.React(textGen, scene.Description)
+
+			if n.Status {
+				NPCAction = n.React(textGen, scene.Description)
+			} else {
+				fmt.Print("\n", n.Name, " is dead\n")
+				n.Die()
+				NPCAction = ""
+			}
 
 			if err != nil {
 				fmt.Print("Error: ", err)
@@ -52,11 +61,18 @@ func Loop(textGen textgen.TextGenerator, p player.Player, n npc.NPC, scene scene
 
 			scene.ValidateAction(textGen, NPCAction, PlayerAction, n.Description, p.Description)
 			scene.UpdateBackground(textGen)
-			p.LogEvent(scene.GetSummary(textGen))
+			Summary = scene.GetSummary(textGen)
+			p.LogEvent(Summary)
+			n.LogEvent(Summary)
 
-			randomNumber := rand.Intn(100) + 1 // This gives a number between 1 and 100
-			if randomNumber <= 20 {
-				p.UpdateDescription(textGen, scene.Description)
+			if n.Status {
+				n.UpdateDescription(textGen, scene.Description)
+			}
+
+			p.UpdateDescription(textGen, scene.Description)
+			if !p.Status {
+				fmt.Print("\nYou are dead. Game over.")
+				return
 			}
 
 			storage.SaveState(p, n, scene)

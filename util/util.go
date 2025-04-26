@@ -37,6 +37,19 @@ func ExtractName(input string) string {
 	return ""
 }
 
+func ExtractStatus(text string) string {
+	// Regular expression to match the status after "# Status"
+	re := regexp.MustCompile(`(?m)# Status\s+(\w+)$`)
+
+	// Find the match
+	matches := re.FindStringSubmatch(text)
+	if len(matches) > 1 {
+		status := strings.TrimSpace(matches[1])
+		return status
+	}
+	return ""
+}
+
 func ExtractDescription(input string) string {
 	// Match "Description:" followed by whitespace and capture everything after it
 	re := regexp.MustCompile(`Description:\s*(.*)`)
