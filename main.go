@@ -88,7 +88,8 @@ func main() {
 		s.Create(textGen)
 		name := player.GetName(os.Stdin)
 		p = player.GeneratePlayer(textGen, name, "1", "Human")
-		n = s.NewNPC(textGen, "2")
+		n = s.NewNPC(textGen, "1")
+		storage.SaveState(p, n, s)
 	}
 
 	// Main game loop

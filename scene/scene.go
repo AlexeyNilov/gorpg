@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	StartScenePrompt = `I'm writing a LitRPG novel, where the world has been dramatically transformed by the System. The protagonist is teleported to a random outdoor location. Chose between forest, desert, mountains, iceland, beach, ruins.
+	StartScenePrompt = `I'm writing a LitRPG novel, where the world has been dramatically transformed by the System. The protagonist is teleported to a random location. Chose one of: forest, desert, mountains, iceland, beach, city ruins, swamp, canyon, lake.
 The setting should evoke a sense of wonder and discovery, with the protagonist alone and not in immediate danger.
 Describe the location in vivid detail, using 'you' to immerse the reader as if they are experiencing the scene themselves.
 Use simple English. Avoid any introductory or concluding phrases.`
@@ -27,6 +27,9 @@ Analyze the provided information using the structure below:
 
 # Weather
 [Detail the weather conditions.]
+
+# Time
+[Time of day and celestial bodies]
 
 # Terrain
 [Describe the terrain, focusing on background features and surroundings.]
@@ -55,12 +58,32 @@ Be creative, but use clear, simple English without any introductory or concludin
 # Player actions: {{.PlayerActions}}
 
 You are the omnipotent System AKA Game Master, overseeing virtual world. Be critical and ensure the Player's actions remain grounded in their skills, stats, and level. If the Player attempts something beyond their abilities, enforce failure with humor, vividly describing the mishap. Predict and narrate the most likely outcome of the Player's actions based on their capabilities and the environment. Only describe events or NPC actions that the Player can perceive. When the Player requests information, seamlessly integrate it into your response. Avoid any introductory or concluding phrases.`
-	NewNPCTemplate = `You are the omnipotent System AKA Game Master, overseeing virtual world. Generate a brief description of a new, randomly generated hostile NPC at Level {{.Level}}, tailored to fit the context of the scene: {{.Scene}}
+	NewNPCTemplate = `You are the omnipotent System AKA Game Master, overseeing virtual world. Generate a brief description of a new hostile|friendly|chaotic|neutral NPC at Level {{.Level}}, tailored to fit the context of the scene: {{.Scene}}
 
-Ensure the NPC has a clear intent, and include a few fitting skills relevant to their level and role. Present your response in the following format:
+Ensure the NPC has a clear intent, and include a few fitting skills relevant to their level and role.
+Provide information using the structure below:
 
 Name: [Generated NPC Name]
-Description: [Detailed NPC Description, including their appearance, intent, level, HP, and skills.]`
+Description: Detailed NPC Description, including their appearance
+
+# Intent
+[Describe the intent]
+
+# Level
+[Current level]
+
+# HP
+[Current health points/Max health points]
+
+# Status
+[Dead|Alive]
+
+# Skills
+[List skills]
+
+# Inventory
+[List items and weapons]
+`
 	ActionSummaryPrompt = `Summarize the following actions in a one sentence, ensuring they are grounded in the context of the scene: {{.Scene}}`
 )
 
