@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"math/rand"
 	"os"
@@ -14,20 +15,13 @@ import (
 	"github.com/AlexeyNilov/gorpg/textgen"
 )
 
-func SaveState(p player.Player, n npc.NPC, s scene.Scene) {
-	npcs := []npc.NPC{n, p.NPC}
-	_ = storage.SaveNPCsToYAML(npcs, "data/npc.yaml")
-	_ = storage.SaveSceneToYAML(s, "data/scene.yaml")
-}
-
-func Loop(textGen textgen.TextGenerator, scene scene.Scene, n npc.NPC, p player.Player) {
+func Loop(textGen textgen.TextGenerator, p player.Player, n npc.NPC, scene scene.Scene) {
 	// Create a channel to listen for termination signals (Ctrl+C)
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
 	// Infinite loop
-	fmt.Print("Press Ctrl+C to exit\n")
-	fmt.Print("Story begins\n", "===================\n")
+	fmt.Print("Press Ctrl+C to exit\n\n")
 
 	for {
 		select {
@@ -39,9 +33,9 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, n npc.NPC, p player.
 			// Perform your loop operations here
 			fmt.Print(scene.Description, "\n===================\n")
 
+			PlayerAction, err := p.GetAction()
 			NPCAction := n.React(textGen, scene.Description)
 
-			PlayerAction, err := p.GetAction()
 			if err != nil {
 				fmt.Print("Error: ", err)
 				return
@@ -58,7 +52,7 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, n npc.NPC, p player.
 				p.UpdateDescription(textGen, scene.Description)
 			}
 
-			SaveState(p, n, scene)
+			storage.SaveState(p, n, scene)
 		}
 	}
 }
@@ -66,12 +60,30 @@ func Loop(textGen textgen.TextGenerator, scene scene.Scene, n npc.NPC, p player.
 func main() {
 	textGen := &textgen.GenericTextGenerator{}
 
-	scene := scene.Scene{}
-	scene.Create(textGen)
-	name := player.GetName(os.Stdin)
-	player := player.GeneratePlayer(textGen, name, "1", "Human")
-	npc := scene.NewNPC(textGen, "2")
+	// Define the `resume` flag
+	resume := flag.Bool("resume", false, "Resume the game from the last state")
 
-	Loop(textGen, scene, npc, player)
+	// Parse the flags
+	flag.Parse()
 
+	// Declare variables for player, NPC, and scene
+	var p player.Player
+	var n npc.NPC
+	var s scene.Scene
+
+	// Use the `resume` value in your program
+	if *resume {
+		fmt.Println("Resuming from the last state...")
+		p, n, s = storage.LoadState()
+	} else {
+		fmt.Println("Starting fresh...")
+		s = scene.Scene{}
+		s.Create(textGen)
+		name := player.GetName(os.Stdin)
+		p = player.GeneratePlayer(textGen, name, "1", "Human")
+		n = s.NewNPC(textGen, "2")
+	}
+
+	// Main game loop
+	Loop(textGen, p, n, s)
 }

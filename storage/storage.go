@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/AlexeyNilov/gorpg/npc"
+	"github.com/AlexeyNilov/gorpg/player"
 	"github.com/AlexeyNilov/gorpg/scene"
 	"gopkg.in/yaml.v3"
 )
@@ -42,4 +43,23 @@ func LoadSceneFromYAML(filename string) (scene.Scene, error) {
 	var scene scene.Scene
 	err = yaml.Unmarshal(data, &scene)
 	return scene, err
+}
+
+func SaveState(p player.Player, n npc.NPC, s scene.Scene) {
+	npcs := []npc.NPC{n, p.NPC}
+	_ = SaveNPCsToYAML(npcs, "data/npc.yaml")
+	_ = SaveSceneToYAML(s, "data/scene.yaml")
+}
+
+func LoadState() (player.Player, npc.NPC, scene.Scene ){
+	npcs, _ := LoadNPCsFromYAML("data/npc.yaml")
+	n := npcs[0]
+	p := player.Player{
+		NPC: npcs[1],
+		Input: os.Stdin,
+	}
+	scene, _ := LoadSceneFromYAML("data/scene.yaml")
+
+	return p, n, scene 
+
 }

@@ -13,9 +13,37 @@ const (
 The setting should evoke a sense of wonder and discovery, with the protagonist alone and not in immediate danger.
 Describe the location in vivid detail, using 'you' to immerse the reader as if they are experiencing the scene themselves.
 Use simple English. Avoid any introductory or concluding phrases.`
-	UpdateSceneTemplate = `Provide a brief summary of the scene, focusing on the background details and the surroundings. Use clear, simple English without any introductory or concluding phrases.
+	UpdateSceneTemplate = `You are a tactical AI responsible for analyzing and synthesizing environmental data in a LitRPG universe.
 
 {{.Background}}
+
+Analyze the provided information using the structure below:
+
+# Location
+[Describe the location, including details about the world, country, and relevant history.]
+
+# Weather
+[Detail the weather conditions.]
+
+# Terrain
+[Describe the terrain, focusing on background features and surroundings.]
+
+# Resources
+[List available resources, including food, water, and craftable materials, if present.]
+
+# Creatures
+[Identify animals or other creatures present, if any.]
+
+# NPC
+[Describe NPCs, including their state, belongings, weapons, and position relative to the terrain, if present.]
+
+# Player
+[Describe the Player, including their state, belongings, weapons, and position relative to the terrain.]
+
+# Distances
+[Specify distances between key objects, the NPC, and the Player.]
+
+Be creative, but use clear, simple English without any introductory or concluding phrases
 `
 	ValidateActionTemplate = `# Background: {{.Background}}
 

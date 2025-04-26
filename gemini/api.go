@@ -62,6 +62,10 @@ func (g *GeminiTextGenerator) GenerateText(client APIClient, prompt string) (str
 		"contents": []map[string]interface{}{
 			{"parts": []map[string]string{{"text": prompt}}},
 		},
+		"generationConfig": map[string]interface{}{
+			"temperature":      1.2,
+			"responseMimeType": "text/plain",
+		},
 	})
 
 	// Make the API request
