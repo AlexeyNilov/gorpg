@@ -27,12 +27,10 @@ func TestValidateAction(t *testing.T) {
 
 	testutil.LoadEnv()
 	textGen := &textgen.MockTextGenerator{Text: "New scene", Err: nil}
-	reaction := "reaction"
 	action := "action"
-	got := scene.ValidateAction(textGen, reaction, action, "", "")
+	got := scene.ValidateAction(textGen, action, "")
 	want := "New scene"
 	assert.Equal(t, want, got)
-	assert.Equal(t, want, scene.Description)
 }
 
 func TestNewNPC(t *testing.T) {

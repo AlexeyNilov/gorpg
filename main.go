@@ -24,7 +24,9 @@ func Loop(textGen textgen.TextGenerator, p player.Player, n npc.NPC, scene scene
 	fmt.Print("Press Ctrl+C to exit\n\n")
 
 	var NPCAction string
-	var Summary string
+	// var Summary string
+	var NPCValidation string
+	var PlayerValidation string
 
 	for {
 		select {
@@ -59,17 +61,19 @@ func Loop(textGen textgen.TextGenerator, p player.Player, n npc.NPC, scene scene
 
 			fmt.Print("\n")
 
-			scene.ValidateAction(textGen, NPCAction, PlayerAction, n.Description, p.Description)
+			NPCValidation = scene.ValidateAction(textGen, NPCAction, n.Description)
+			PlayerValidation = scene.ValidateAction(textGen, PlayerAction, p.Description)
+			scene.Description = PlayerValidation
 			scene.UpdateBackground(textGen)
-			Summary = scene.GetSummary(textGen)
-			p.LogEvent(Summary)
-			n.LogEvent(Summary)
+			// Summary = scene.GetSummary(textGen)
+			p.LogEvent(PlayerValidation)
+			n.LogEvent(NPCValidation)
 
 			if n.Status {
-				n.UpdateDescription(textGen, scene.Description)
+				n.UpdateDescription(textGen, NPCValidation)
 			}
 
-			p.UpdateDescription(textGen, scene.Description)
+			p.UpdateDescription(textGen, PlayerValidation)
 			storage.SaveState(p, n, scene)
 
 			if !p.Status {

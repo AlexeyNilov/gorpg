@@ -53,17 +53,12 @@ Be creative, but use clear, simple English without any introductory or concludin
 `
 	ValidateActionTemplate = `# Background: {{.Background}}
 
-# NPC description: {{.NPCDescription}}
+# Description: {{.Description}}
 
-# NPC actions: {{.NPCActions}}
+# Actions: {{.Actions}}
 
-# Player description: {{.PlayerDescription}}
-
-# Player actions: {{.PlayerActions}}
-
-You are the omnipotent System AKA Game Master, overseeing virtual world. Be helpful and ensure the Player gets what he/she wants.
-Predict and narrate the most likely outcome of the Player's actions based on their capabilities and the environment.
-Only describe events or NPC actions that the Player can perceive.
+You are the omnipotent System AKA Game Master, overseeing virtual world. Be helpful and ensure the Player/NPC gets what he/she wants.
+Predict and narrate the most likely outcome of the Player/NPC actions based on their capabilities and the environment.
 When the Player requests information, seamlessly integrate it into your response. Avoid any introductory or concluding phrases.`
 	NewNPCTemplate = `You are the omnipotent System AKA Game Master, overseeing virtual world. Generate a brief description of a new hostile|friendly|chaotic|neutral NPC at Level {{.Level}}, tailored to fit the context of the scene: {{.Scene}}
 
@@ -128,24 +123,20 @@ func (s *Scene) UpdateBackground(tg textgen.TextGenerator) string {
 	return s.Background
 }
 
-func (s *Scene) ValidateAction(tg textgen.TextGenerator, NPCAction, PlayerAction, NPCDescription, PlayerDescription string) string {
+func (s *Scene) ValidateAction(tg textgen.TextGenerator, Action, Description string) string {
 	data := struct {
-		Background        string
-		NPCActions        string
-		NPCDescription    string
-		PlayerActions     string
-		PlayerDescription string
+		Background  string
+		Actions     string
+		Description string
 	}{
-		Background:        s.Background + "\n" + s.Description,
-		NPCActions:        NPCAction,
-		NPCDescription:    NPCDescription,
-		PlayerActions:     PlayerAction,
-		PlayerDescription: PlayerDescription,
+		Background:  s.Background + "\n" + s.Description,
+		Actions:     Action,
+		Description: Description,
 	}
 	prompt := util.ParseTemplate(ValidateActionTemplate, data)
-	s.Description, _ = tg.Generate(prompt)
+	validation, _ := tg.Generate(prompt)
 
-	return s.Description
+	return validation
 }
 
 func (s *Scene) NewNPC(tg textgen.TextGenerator, level string) npc.NPC {
