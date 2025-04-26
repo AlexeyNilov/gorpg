@@ -50,7 +50,7 @@ func Loop(textGen textgen.TextGenerator, p player.Player, n npc.NPC, scene scene
 
 			fmt.Print("\n")
 
-			scene.ValidateAction(textGen, NPCAction, PlayerAction)
+			scene.ValidateAction(textGen, NPCAction, PlayerAction, n.Description, p.Description)
 			scene.UpdateBackground(textGen)
 			p.LogEvent(scene.GetSummary(textGen))
 

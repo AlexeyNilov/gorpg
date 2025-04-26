@@ -17,7 +17,7 @@ const (
 	NewPlayerTemplate = `You are the omnipotent System AKA Game Master, overseeing virtual world. Generate a brief description of a new Player named {{.Name}}. Race {{.Race}}. Randomly select their class, and include a few fitting skills appropriate to their level {{.Level}} and class. The description should include their appearance, level, and skills.
 Provide information using the structure below:
 
-Description: Detailed Player Description, including their appearance
+Description: Detailed Player Description, including their appearance, class and race
 
 # XP
 [Current experience points/Max experience points]

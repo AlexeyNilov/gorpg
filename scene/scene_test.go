@@ -29,7 +29,7 @@ func TestValidateAction(t *testing.T) {
 	textGen := &textgen.MockTextGenerator{Text: "New scene", Err: nil}
 	reaction := "reaction"
 	action := "action"
-	got := scene.ValidateAction(textGen, reaction, action)
+	got := scene.ValidateAction(textGen, reaction, action, "", "")
 	want := "New scene"
 	assert.Equal(t, want, got)
 	assert.Equal(t, want, scene.Description)

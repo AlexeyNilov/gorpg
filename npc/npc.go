@@ -29,8 +29,30 @@ Include any significant changes to their level, HP, and skills. Repeated actions
 # Initial state:
 {{.NPCDescription}}
 
-# Present your response in the following format:
-Description: [Detailed Description, including race, class, appearance, level, HP, XP, and skills.]
+# Provide information using the structure below:
+
+Description: Detailed description, including their appearance and race
+
+# Intent
+[Describe the intent]
+
+# XP
+[Current experience points/Max experience points]
+
+# Level
+[Current level]
+
+# HP
+[Current health points/Max health points]
+
+# Status
+[Dead|Alive]
+
+# Skills
+[List skills]
+
+# Inventory
+[List items and weapons]
 `
 )
 

@@ -53,18 +53,24 @@ Be creative, but use clear, simple English without any introductory or concludin
 `
 	ValidateActionTemplate = `# Background: {{.Background}}
 
+# NPC description: {{.NPCDescription}}
+
 # NPC actions: {{.NPCActions}}
+
+# Player description: {{.PlayerDescription}}
 
 # Player actions: {{.PlayerActions}}
 
-You are the omnipotent System AKA Game Master, overseeing virtual world. Be critical and ensure the Player's actions remain grounded in their skills, stats, and level. If the Player attempts something beyond their abilities, enforce failure with humor, vividly describing the mishap. Predict and narrate the most likely outcome of the Player's actions based on their capabilities and the environment. Only describe events or NPC actions that the Player can perceive. When the Player requests information, seamlessly integrate it into your response. Avoid any introductory or concluding phrases.`
+You are the omnipotent System AKA Game Master, overseeing virtual world. Be critical and ensure the Player's actions remain grounded in their skills, stats, and level. If the Player attempts something beyond their abilities, enforce failure with humor, vividly describing the mishap.
+Predict and narrate the most likely outcome of the Player's actions based on their capabilities and the environment. Only describe events or NPC actions that the Player can perceive.
+When the Player requests information, seamlessly integrate it into your response. Avoid any introductory or concluding phrases.`
 	NewNPCTemplate = `You are the omnipotent System AKA Game Master, overseeing virtual world. Generate a brief description of a new hostile|friendly|chaotic|neutral NPC at Level {{.Level}}, tailored to fit the context of the scene: {{.Scene}}
 
 Ensure the NPC has a clear intent, and include a few fitting skills relevant to their level and role.
 Provide information using the structure below:
 
 Name: [Generated NPC Name]
-Description: Detailed NPC Description, including their appearance
+Description: Detailed NPC Description, including their appearance and race
 
 # Intent
 [Describe the intent]
@@ -121,15 +127,19 @@ func (s *Scene) UpdateBackground(tg textgen.TextGenerator) string {
 	return s.Background
 }
 
-func (s *Scene) ValidateAction(tg textgen.TextGenerator, reaction, action string) string {
+func (s *Scene) ValidateAction(tg textgen.TextGenerator, NPCAction, PlayerAction, NPCDescription, PlayerDescription string) string {
 	data := struct {
-		Background    string
-		NPCActions    string
-		PlayerActions string
+		Background        string
+		NPCActions        string
+		NPCDescription    string
+		PlayerActions     string
+		PlayerDescription string
 	}{
-		Background:    s.Background + "\n" + s.Description,
-		NPCActions:    reaction,
-		PlayerActions: action,
+		Background:        s.Background + "\n" + s.Description,
+		NPCActions:        NPCAction,
+		NPCDescription:    NPCDescription,
+		PlayerActions:     PlayerAction,
+		PlayerDescription: PlayerDescription,
 	}
 	prompt := util.ParseTemplate(ValidateActionTemplate, data)
 	s.Description, _ = tg.Generate(prompt)
