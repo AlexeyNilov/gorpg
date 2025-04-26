@@ -78,3 +78,33 @@ func ExtractDescription(input string) string {
 
 	return strings.TrimSpace(description)
 }
+
+func WrapText(text string, width int) string {
+	if width <= 0 {
+		return text
+	}
+
+	var result strings.Builder
+	line := strings.Builder{}
+	lineLength := 0
+
+	for _, word := range strings.SplitAfter(text, " ") {
+		wordLength := len(word)
+
+		// If adding the word exceeds the width, flush the current line
+		if lineLength+wordLength > width {
+			result.WriteString(line.String())
+			result.WriteString("\n")
+			line.Reset()
+			lineLength = 0
+		}
+
+		// Add the word to the line
+		line.WriteString(word)
+		lineLength += wordLength
+	}
+
+	// Add any remaining content in the line buffer
+	result.WriteString(line.String())
+	return result.String()
+}

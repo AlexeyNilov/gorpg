@@ -13,6 +13,7 @@ import (
 	"github.com/AlexeyNilov/gorpg/scene"
 	"github.com/AlexeyNilov/gorpg/storage"
 	"github.com/AlexeyNilov/gorpg/textgen"
+	"github.com/AlexeyNilov/gorpg/util"
 )
 
 func Loop(textGen textgen.TextGenerator, p player.Player, n npc.NPC, scene scene.Scene) {
@@ -31,7 +32,9 @@ func Loop(textGen textgen.TextGenerator, p player.Player, n npc.NPC, scene scene
 			return
 		default:
 			// Perform your loop operations here
-			fmt.Print(scene.Description, "\n===================\n")
+			wrappedText := util.WrapText(scene.Description, 96)
+			// wrappedText = scene.Description
+			fmt.Print(wrappedText, "\n===================\n")
 
 			PlayerAction, err := p.GetAction()
 			if PlayerAction == "" {
