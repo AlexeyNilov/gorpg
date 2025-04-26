@@ -39,12 +39,14 @@ func ExtractName(input string) string {
 
 func ExtractStatus(text string) string {
 	// Regular expression to match the status after "# Status"
-	re := regexp.MustCompile(`(?m)# Status\s+(\w+)$`)
+	re := regexp.MustCompile(`(?m)# Status\s+(.+)$`)
 
 	// Find the match
 	matches := re.FindStringSubmatch(text)
 	if len(matches) > 1 {
 		status := strings.TrimSpace(matches[1])
+		status = strings.ReplaceAll(status, "[", "")
+		status = strings.ReplaceAll(status, "]", "")
 		return status
 	}
 	return ""

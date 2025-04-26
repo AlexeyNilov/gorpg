@@ -50,6 +50,7 @@ func SaveState(p player.Player, n npc.NPC, s scene.Scene) {
 	_ = SaveNPCsToYAML(npcs, "data/npc.yaml")
 	_ = SaveSceneToYAML(s, "data/scene.yaml")
 	_ = s.AppendToFile("data/game.log")
+	_ = n.AppendToFile("data/npc.log")
 }
 
 func LoadState() (player.Player, npc.NPC, scene.Scene ){

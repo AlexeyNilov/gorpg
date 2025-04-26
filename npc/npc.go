@@ -1,7 +1,10 @@
 package npc
 
 import (
+	"fmt"
+	"os"
 	"strings"
+	"time"
 
 	"github.com/AlexeyNilov/gorpg/textgen"
 	"github.com/AlexeyNilov/gorpg/util"
@@ -87,7 +90,7 @@ func GetPrompt(template string, npc NPC, background string) string {
 	return util.ParseTemplate(template, data)
 }
 
-func (n *NPC) Die () {
+func (n *NPC) Die() {
 	n.Name = ""
 	n.Description = ""
 	n.Log = nil
@@ -115,4 +118,17 @@ func (n *NPC) IsAlive() bool {
 	} else {
 		return false
 	}
+}
+
+func (n *NPC) AppendToFile(filename string) error {
+	timestamp := time.Now().Format("2006-01-02 15:04:05")
+	nData := n.Name + "\n" + n.Description + "\n" + strings.Join(n.Log, "\n")
+	Data := fmt.Sprintf("Timestamp: %s\n%s\n", timestamp, nData)
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	_, err = file.WriteString(Data + "\n")
+	return err
 }

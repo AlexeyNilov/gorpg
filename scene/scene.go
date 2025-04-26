@@ -163,22 +163,15 @@ func (s *Scene) NewNPC(tg textgen.TextGenerator, level string) npc.NPC {
 	return n
 }
 
-// Function to append NPC data with a timestamp to a file
+// Function to append Scene data with a timestamp to a file
 func (scene *Scene) AppendToFile(filename string) error {
-	// Get the current timestamp in a human-readable format
 	timestamp := time.Now().Format("2006-01-02 15:04:05")
-
-	// Format the NPC data into a human-readable string with the timestamp
 	Data := fmt.Sprintf("Timestamp: %s\n%s\n", timestamp, scene.Description)
-
-	// Open the file npc.log in append mode, create it if it doesn't exist
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
-
-	// Append the formatted NPC data to the file
 	_, err = file.WriteString(Data + "\n")
 	return err
 }

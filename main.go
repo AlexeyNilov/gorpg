@@ -70,12 +70,12 @@ func Loop(textGen textgen.TextGenerator, p player.Player, n npc.NPC, scene scene
 			}
 
 			p.UpdateDescription(textGen, scene.Description)
+			storage.SaveState(p, n, scene)
+
 			if !p.Status {
 				fmt.Print("\nYou are dead. Game over.")
 				return
 			}
-
-			storage.SaveState(p, n, scene)
 		}
 	}
 }

@@ -38,7 +38,7 @@ Dead`
 	assert.Equal(t, want, got)
 	input = `Wild wolf, powerful and hungry
 # Status
-Alive`
+[Alive]`
 	want = "Alive"
 	got = ExtractStatus(input)
 	assert.Equal(t, want, got)
