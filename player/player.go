@@ -40,7 +40,9 @@ func (p *Player) CreateDescription(tg textgen.TextGenerator, level, race string)
 }
 
 func GetName(input io.Reader) string {
-	fmt.Print("Enter your name: ")
+	const maxNameLength = 32 // Maximum length for the name
+
+	fmt.Printf("Enter your name (max %d characters): ", maxNameLength)
 
 	reader := bufio.NewReader(input)
 	name, err := reader.ReadString('\n')
@@ -48,16 +50,26 @@ func GetName(input io.Reader) string {
 		log.Println("Error reading input:", err)
 		panic(err)
 	}
+
+	// Trim whitespace and ensure the name doesn't exceed maxNameLength
 	name = strings.TrimSpace(name)
+	if len(name) > maxNameLength {
+		name = name[:maxNameLength]
+		fmt.Printf("Input truncated to %d characters.\n", maxNameLength)
+	}
+
 	if len(name) == 0 {
 		panic("No name given")
 	}
+
 	return name
 }
 
 func (p *Player) GetAction() (string, error) {
+	const maxActionLength = 256 // Maximum length for the action input
+
 	// Prompt the user for input
-	fmt.Printf("%s, enter your action: ", p.Name)
+	fmt.Printf("%s: ", p.Name)
 
 	// Read from the injected input source
 	reader := bufio.NewReader(p.Input)
@@ -66,8 +78,14 @@ func (p *Player) GetAction() (string, error) {
 		return "", err
 	}
 
+	// Trim whitespace and ensure the action doesn't exceed maxActionLength
 	action = strings.TrimSpace(action)
-	
+	if len(action) > maxActionLength {
+		action = action[:maxActionLength]
+		fmt.Printf("Action truncated to %d characters.\n", maxActionLength)
+	}
+
+	// Log the action
 	p.LogEvent(action)
 	return action, nil
 }
