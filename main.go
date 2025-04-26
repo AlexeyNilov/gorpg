@@ -34,6 +34,10 @@ func Loop(textGen textgen.TextGenerator, p player.Player, n npc.NPC, scene scene
 			fmt.Print(scene.Description, "\n===================\n")
 
 			PlayerAction, err := p.GetAction()
+			if PlayerAction == "" {
+				fmt.Print("\nNo action, exiting...")
+				return
+			}
 			NPCAction := n.React(textGen, scene.Description)
 
 			if err != nil {

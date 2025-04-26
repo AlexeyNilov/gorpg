@@ -67,6 +67,7 @@ func (p *Player) GetAction() (string, error) {
 	}
 
 	action = strings.TrimSpace(action)
+	
 	p.LogEvent(action)
 	return action, nil
 }

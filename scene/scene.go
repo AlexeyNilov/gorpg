@@ -1,7 +1,10 @@
 package scene
 
 import (
+	"fmt"
+	"os"
 	"strings"
+	"time"
 
 	"github.com/AlexeyNilov/gorpg/npc"
 	"github.com/AlexeyNilov/gorpg/textgen"
@@ -9,7 +12,7 @@ import (
 )
 
 const (
-	StartScenePrompt    = `I'm writing a LitRPG novel, where the world has been dramatically transformed by the System. The protagonist is teleported to a random outdoor location. Chose between forest, desert, mountains, iceland, beach, ruins.
+	StartScenePrompt = `I'm writing a LitRPG novel, where the world has been dramatically transformed by the System. The protagonist is teleported to a random outdoor location. Chose between forest, desert, mountains, iceland, beach, ruins.
 The setting should evoke a sense of wonder and discovery, with the protagonist alone and not in immediate danger.
 Describe the location in vivid detail, using 'you' to immerse the reader as if they are experiencing the scene themselves.
 Use simple English. Avoid any introductory or concluding phrases.`
@@ -74,9 +77,9 @@ func (s *Scene) Create(tg textgen.TextGenerator) string {
 
 func (s *Scene) GetSummary(tg textgen.TextGenerator) string {
 	data := struct {
-		Scene    string
+		Scene string
 	}{
-		Scene:    s.Description,
+		Scene: s.Description,
 	}
 	prompt := util.ParseTemplate(ActionSummaryPrompt, data)
 	summary, _ := tg.Generate(prompt)
@@ -85,9 +88,9 @@ func (s *Scene) GetSummary(tg textgen.TextGenerator) string {
 
 func (s *Scene) UpdateBackground(tg textgen.TextGenerator) string {
 	data := struct {
-		Background    string
+		Background string
 	}{
-		Background:    s.Background + "\n" + s.Description,
+		Background: s.Background + "\n" + s.Description,
 	}
 	prompt := util.ParseTemplate(UpdateSceneTemplate, data)
 	s.Background, _ = tg.Generate(prompt)
@@ -122,4 +125,24 @@ func (s *Scene) NewNPC(tg textgen.TextGenerator, level string) npc.NPC {
 	prompt := util.ParseTemplate(NewNPCTemplate, data)
 	reply, _ := tg.Generate(prompt)
 	return npc.NPC{Name: util.ExtractName(reply), Description: util.ExtractDescription(reply)}
+}
+
+// Function to append NPC data with a timestamp to a file
+func (scene *Scene) AppendToFile(filename string) error {
+	// Get the current timestamp in a human-readable format
+	timestamp := time.Now().Format("2006-01-02 15:04:05")
+
+	// Format the NPC data into a human-readable string with the timestamp
+	Data := fmt.Sprintf("Timestamp: %s\n%s\n", timestamp, scene.Description)
+
+	// Open the file npc.log in append mode, create it if it doesn't exist
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// Append the formatted NPC data to the file
+	_, err = file.WriteString(Data + "\n")
+	return err
 }
