@@ -3,7 +3,7 @@ package transformer
 import (
 	"testing"
 
-	"github.com/AlexeyNilov/gorpg/stuff/resource"
+	"github.com/AlexeyNilov/gorpg/system/resource"
 	"github.com/stretchr/testify/assert"
 )
 

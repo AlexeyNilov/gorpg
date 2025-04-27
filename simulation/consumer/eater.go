@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/AlexeyNilov/gorpg/ooda"
-	"github.com/AlexeyNilov/gorpg/stuff/transformer"
+	"github.com/AlexeyNilov/gorpg/system/transformer"
 )
 
 type Eater struct {

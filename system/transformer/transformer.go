@@ -1,6 +1,6 @@
 package transformer
 
-import "github.com/AlexeyNilov/gorpg/stuff/resource"
+import "github.com/AlexeyNilov/gorpg/system/resource"
 
 type Transformer struct {
 	ConsumedCount int
