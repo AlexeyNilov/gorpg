@@ -1,7 +1,7 @@
 package textgen
 
 import (
-	"github.com/AlexeyNilov/gorpg/gemini"
+	"github.com/AlexeyNilov/gorpg/textgen/gemini"
 )
 
 type MockTextGenerator struct {
