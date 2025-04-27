@@ -1,44 +1,35 @@
 package storage
 
 import (
-	"os"
 	"testing"
 
-	"github.com/AlexeyNilov/gorpg/npc"
-	"github.com/AlexeyNilov/gorpg/player"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSaveNPCsToYAML(t *testing.T) {
-	n := npc.NPC{Name: "Wolf", Description: "Wild wolf, powerful and hungry"}
-	p := player.Player{
-		NPC: npc.NPC{
-			Name:        "John",
-			Description: "Low level goblin archer",
-		},
-		Input: os.Stdin,
-	}
-	npcs := []npc.NPC{}
-	npcs = append(npcs, n)
-	npcs = append(npcs, p.NPC)
-	_ = SaveNPCsToYAML(npcs, "test.yaml")
+func TestSaveToYAML(t *testing.T) {
+	n := struct {
+		Name        string
+		Description string
+	}{Name: "Test", Description: "Test description"}
+
+	err := SaveToYAML(n, "test.yaml")
+	assert.NoError(t, err)
 }
 
-func TestLoadNPCsFromYAML(t *testing.T) {
-	n := npc.NPC{Name: "Wolf", Description: "Wild wolf, powerful and hungry"}
-	n.LogEvent("test")
-	p := player.Player{
-		NPC: npc.NPC{
-			Name:        "John",
-			Description: "Low level goblin archer",
-		},
-		Input: os.Stdin,
+func TestLoadFromYAML(t *testing.T) {
+	want := struct {
+		Name        string
+		Description string
+	}{Name: "Test", Description: "Test description"}
+
+	err := SaveToYAML(want, "test.yaml")
+	assert.NoError(t, err)
+
+	var got struct {
+		Name        string
+		Description string
 	}
-	p.LogEvent("test\ntest")
-	want := []npc.NPC{}
-	want = append(want, n)
-	want = append(want, p.NPC)
-	_ = SaveNPCsToYAML(want, "test.yaml")
-	got, _ := LoadNPCsFromYAML("test.yaml")
+	err = LoadFromYAML("test.yaml", &got)
+	assert.NoError(t, err)
 	assert.Equal(t, want, got)
 }
