@@ -3,4 +3,4 @@ gorpg
 rnd.go
 *.log
 storage/test.yaml
-data/*
+output/*
