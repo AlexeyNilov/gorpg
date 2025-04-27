@@ -2,9 +2,9 @@ package ooda
 
 type OODAProcess struct {
 	Observation string // Data or input observed
-	Orientation string // Context or orientation based on observations
-	Decision    string // Decision derived from the context
-	Action      string // Action planned based on the decision
+	Orientation string // Orientation(context) based on observations
+	Decision    string // Decision(plan, strategy) derived from the context
+	Action      string // Action based on the decision
 }
 
 type Observer interface {
@@ -16,7 +16,11 @@ type Orienter interface {
 }
 
 type Decider interface {
-	Decide(context string) string
+	Decide(orientation string) string
+}
+
+type Actuator interface {
+	Act(decision string) string
 }
 
 // Reset clears all data in the OODA process to restart the loop.
@@ -47,4 +51,21 @@ func (o *OODAProcess) Decide(decider Decider) {
 		return
 	}
 	o.Decision = decider.Decide(o.Orientation)
+}
+
+func (o *OODAProcess) Act(actuator Actuator) {
+	// Empty decision leads to empty action
+	if o.Decision == "" {
+		o.Action = ""
+		return
+	}
+	o.Action = actuator.Act(o.Decision)
+}
+
+func (o *OODAProcess) Run(observer Observer, orienter Orienter, decider Decider, actuator Actuator) {
+	o.Reset()
+	o.Observe(observer)
+	o.Orient(orienter)
+	o.Decide(decider)
+	o.Act(actuator)
 }
