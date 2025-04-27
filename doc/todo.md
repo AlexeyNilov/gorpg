@@ -1,0 +1,3 @@
+# TODO
+
+* Model OODA loop
