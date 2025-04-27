@@ -1,4 +1,5 @@
 ## Ideas
+
 * Add some puzzle/treasure hunt mechanic
 * Scene exit strategy?
 * X=fantasy
