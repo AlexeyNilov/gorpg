@@ -44,3 +44,19 @@ func TestExecute(t *testing.T) {
 	assert.Equal(t, 0, eater.ConsumedCount)
 	assert.Equal(t, 0, eater.ProducedCount)
 }
+
+func BenchmarkExecute(b *testing.B) {
+	resource := resource.Resource{
+		Value:    100,
+		MaxValue: 100,
+	}
+	eaters := []LightEater{}
+	for range 100 {
+		eaters = append(eaters, NewLightEater())
+	}
+
+	b.ResetTimer()
+	for i := range eaters {
+		eaters[i].Execute("Light", &resource, &resource)
+	}
+}
