@@ -7,18 +7,22 @@ import (
 
 type LightEater struct {
 	transformer.ResourceTransformer
+	ConsumeRate int
+	ProduceRate int
 }
 
-func CreateLightEater() LightEater {
+func NewLightEater() LightEater {
 	le := LightEater{}
+	le.ConsumeRate = 2
+	le.ProduceRate = 1
 	le.MaxValue = 10
 	return le
 }
 
-func (le *LightEater) Execute(scene Scene, in resource.Getter, out resource.Putter) {
-	switch scene.Description {
+func (le *LightEater) Execute(sceneDescription string, in resource.Getter, out resource.Putter) {
+	switch sceneDescription {
 	case "Light":
-		le.Consume(in, 2)
-		le.Produce(out, 1)
+		le.Consume(in, le.ConsumeRate)
+		le.Produce(out, le.ProduceRate)
 	}
 }

@@ -14,7 +14,7 @@ func main() {
 		MaxValue: 100,
 	}
 
-	eater := CreateLightEater()
+	eater := NewLightEater()
 
 	air := resource.Resource{
 		Value:    0,
@@ -25,7 +25,7 @@ func main() {
 		fmt.Println(scene)
 		fmt.Println(light, eater, air)
 
-		eater.Execute(scene, &light, &air)
+		eater.Execute(scene.Description, &light, &air)
 		scene.Update()
 	}
 }
