@@ -16,4 +16,8 @@ func main() {
 	for _, point := range *space {
 		fmt.Print(point.Next.Next.ID, "-")
 	}
+
+	fmt.Println()
+	point := space.GetPoint(5)
+	fmt.Println(point.ID)
 }

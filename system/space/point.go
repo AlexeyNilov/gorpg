@@ -30,4 +30,13 @@ func CreateSpace(n int) *Space {
 	return &space
 }
 
+func (s *Space) GetPoint(id int) *Point {
+	for i := range *s {
+		if (*s)[i].ID == id {
+			return &(*s)[i]
+		}
+	}
+	return nil
+}
+
 

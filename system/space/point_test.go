@@ -44,3 +44,9 @@ func TestCreateSpace(t *testing.T) {
 func BenchmarkCreateSpace(b *testing.B) {
 	CreateSpace(10)
 }
+
+func TestGetPoint(t *testing.T) {
+	space := CreateSpace(10)
+	point := space.GetPoint(5)
+	assert.Equal(t, 5, point.ID)
+}
