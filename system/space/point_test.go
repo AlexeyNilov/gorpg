@@ -35,7 +35,7 @@ func TestCreateSpace(t *testing.T) {
 		assert.NotNil(t, (*space)[i].Next)
 	}
 
-	// test if the first and last points are linked
+	// test if the last and first points are linked
 	assert.Equal(t, &(*space)[0], (*space)[len(*space)-1].Next)
 
 	// test ID
