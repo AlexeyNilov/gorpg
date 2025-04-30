@@ -6,6 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const spaceSize = 10
+
 func TestNewPoint(t *testing.T) {
 	point := NewPoint()
 	assert.IsType(t, &Point{}, point)
@@ -27,7 +29,6 @@ func TestAddPoint(t *testing.T) {
 }
 
 func TestCreateSpace(t *testing.T) {
-	spaceSize := 10
 	space := CreateSpace(spaceSize)
 	assert.Equal(t, spaceSize, len((*space)))
 	for i := range *space {
@@ -42,11 +43,11 @@ func TestCreateSpace(t *testing.T) {
 }
 
 func BenchmarkCreateSpace(b *testing.B) {
-	CreateSpace(10)
+	CreateSpace(spaceSize)
 }
 
 func TestGetPoint(t *testing.T) {
-	space := CreateSpace(10)
-	point := space.GetPoint(5)
-	assert.Equal(t, 5, point.ID)
+	space := CreateSpace(spaceSize)
+	point := space.GetPoint(0)
+	assert.Equal(t, 0, point.ID)
 }
